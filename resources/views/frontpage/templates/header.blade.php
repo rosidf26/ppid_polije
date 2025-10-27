@@ -50,7 +50,7 @@
                                     <ul class="nav nav-pills" id="mainNav">
                                         <li class="dropdown">
                                             <a class="dropdown-item dropdown-toggle active" href="{{ url('/') }}">
-                                                BERANDA
+                                                BERANDASS
                                             </a>
                                         </li>
                                         <li class="dropdown">
