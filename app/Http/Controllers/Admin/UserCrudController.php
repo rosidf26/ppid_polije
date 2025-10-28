@@ -4,7 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Requests\UserRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
+use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class UserCrudController
@@ -13,11 +19,11 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
  */
 class UserCrudController extends CrudController
 {
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+    use ListOperation;
+    use CreateOperation;
+    use UpdateOperation;
+    use DeleteOperation;
+    use ShowOperation;
 
     /**
      * Configure the CrudPanel object. Apply settings to all operations.
@@ -58,7 +64,24 @@ class UserCrudController extends CrudController
     {
         CRUD::setValidation(UserRequest::class);
 
-        CRUD::setFromDb(); // fields
+        // CRUD::setFromDb(); // fields
+         $this->crud->addField([    // Image
+            'name' => 'name',
+            'label' => 'Namea',
+            'type' => 'text',
+        ]);
+
+         $this->crud->addField([    // Image
+            'name' => 'email',
+            'label' => 'Emails',
+            'type' => 'email',
+        ]);
+
+         $this->crud->addField([    // Image
+            'name' => 'password',
+            'label' => 'pass',
+            'type' => 'password',
+        ]);
 
         /**
          * Fields can be defined using the fluent syntax or array syntax:
@@ -76,5 +99,16 @@ class UserCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+        //   CRUD::field('name')->validationRules('required|min:5');
+        //   CRUD::field('email')->validationRules('required|email|unique:users,email,'.CRUD::getCurrentEntryId());
+        //   CRUD::field('password')->hint('Type a password to change it.');
+
+        //   \App\User::updating(function ($entry) {
+        //       if (request('password') == null) {
+        //           $entry->password = $entry->getOriginal('password');
+        //       } else {
+        //           $entry->password = Hash::make(request('password'));
+        //       }
+        //   });
     }
 }

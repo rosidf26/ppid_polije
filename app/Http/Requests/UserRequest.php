@@ -25,7 +25,9 @@ class UserRequest extends FormRequest
     public function rules()
     {
         return [
-            // 'name' => 'required|min:5|max:255'
+            'name' => 'required|min:5',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required'
         ];
     }
 
@@ -49,7 +51,7 @@ class UserRequest extends FormRequest
     public function messages()
     {
         return [
-            //
+            'name.required' => 'Nama harus diisi',
         ];
     }
 }
