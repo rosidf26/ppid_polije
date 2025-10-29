@@ -42,3 +42,7 @@ Route::get('/faq', [FrontpageController::class, 'faq']);
 Route::get('/detail-berita', [FrontpageController::class, 'detail_berita']);
 Route::get('/detail-pengumuman', [FrontpageController::class, 'detail_pengumuman']);
 Route::get('/komentar', [FrontpageController::class, 'komentar']);
+
+/** CATCH-ALL ROUTE for Backpack/PageManager - needs to be at the end of your routes.php file  **/
+Route::get('{page}/{subs?}', ['uses' => '\App\Http\Controllers\PageController@index'])
+    ->where(['page' => '^(((?=(?!admin))(?=(?!\/)).))*$', 'subs' => '.*']);
