@@ -10,9 +10,13 @@
     "require": {
         "php": "^7.2.5|^8.0",
         "backpack/crud": "4.1.*",
+        "backpack/filemanager": "^1.1",
         "backpack/menucrud": "^2.0",
+        "backpack/newscrud": "^4.0",
         "backpack/pagemanager": "^3.3",
         "backpack/permissionmanager": "^6.0",
+        "barryvdh/laravel-elfinder": "^0.4.7",
+        "cviebrock/eloquent-sluggable": "^7.0",
         "doctrine/dbal": "^2.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
