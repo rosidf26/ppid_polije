@@ -18,7 +18,11 @@ use App\Http\Controllers\FrontpageController;
 // });
 
 // Route untuk menampilkan data siswa
-Route::get('/', [FrontpageController::class, 'index']);
+// Route::get('/', [FrontpageController::class, 'index']);
+
+ Route::get('/', 'PageController@index')
+        ->name('home');
+
 Route::get('/sambutan-direktur', [FrontpageController::class, 'sambutan']);
 Route::get('/profil-polije', [FrontpageController::class, 'profil']);
 Route::get('/profil-ppid-polije', [FrontpageController::class, 'profil_ppid']);

@@ -20,6 +20,120 @@ trait PageTemplates
     | - page slug
     */
 
+     private function informasi_publik()
+    {
+        $this->crud->addField([
+            'name' => 'featured_content',
+            'label' => 'Featured Content',
+            'type' => 'textarea',
+            'fake' => true,
+            'placeholder' => 'Featured Content',
+            'store_in' => 'extras'
+        ]);
+
+        $this->crud->addField([
+            'name' => 'featured_icon',
+            'label' => 'Featured Icon',
+            'type' => 'text',
+            'fake' => true,
+            'placeholder' => 'Featured Icon',
+            'store_in' => 'extras'
+        ]);
+
+        $this->crud->addField([
+            'name' => 'featured_image',
+            'label' => 'Featured Image',
+            'type' => 'browse',
+            'fake' => true,
+            'placeholder' => 'Featured Image',
+            'store_in' => 'extras'
+        ]);
+
+        $this->crud->addField([
+            'name' => 'content',
+            'label' => trans('backpack::pagemanager.content'),
+            'type' => 'ckeditor',
+            'placeholder' => trans('backpack::pagemanager.content_placeholder'),
+            'extra_plugins' => ['autogrow'],
+            'options' => [
+                'height' => 500,
+                'removePlugins' => 'maximize,about',
+                'stylesSet' => 'my_styles:' . config('app.url') . '/frontpage/js/ckeditor_format_style.js',
+                'allowedContent' => true
+            ]
+        ]);
+    }
+
+    private function statistik()
+    {
+        $this->crud->addField([
+            'name' => 'lb_1',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Label 1',
+            'type' => 'text',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->addField([
+            'name' => 'count_1',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Count 1',
+            'type' => 'number',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->addField([
+            'name' => 'lb_2',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Label 2',
+            'type' => 'text',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->addField([
+            'name' => 'count_2',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Count 2',
+            'type' => 'number',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->addField([
+            'name' => 'lb_3',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Label 3',
+            'type' => 'text',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+        $this->crud->addField([
+            'name' => 'count_3',
+            'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Count 3',
+            'type' => 'number',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ]
+        ]);
+
+    }
+
     private function umum()
     {
          $this->crud->addField([
