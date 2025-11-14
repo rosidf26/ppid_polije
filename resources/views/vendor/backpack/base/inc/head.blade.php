@@ -13,6 +13,12 @@
 <meta name="robots" content="{{ config('backpack.base.meta_robots_content', 'noindex, nofollow') }}">
 @endif
 <title>{{ isset($title) ? $title.' :: '.config('backpack.base.project_name') : config('backpack.base.project_name') }}</title>
+
+<!-- Favicon -->
+<link rel="shortcut icon" href="{{ url(config('app.url') . '/uploads/favicon.ico') }}" type="image/x-icon" />
+<link rel="apple-touch-icon" href="{{ url(config('app.url') . '/uploads/apple-touch-icon.png') }}">
+
+
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
 <link rel="stylesheet" href="{{ url(config('app.url') . '/polije-admin/vendor/bootstrap/css/bootstrap.css') }}" />
 <link rel="stylesheet" href="{{ url(config('app.url') . '/polije-admin/vendor/animate/animate.css') }}">

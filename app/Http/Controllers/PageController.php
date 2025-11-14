@@ -19,37 +19,98 @@ use Mockery\Exception;
 
 class PageController extends Controller
 {
-    // public function index($slug, $subs = null)
-    // {
-    //     // Ambil data halaman berdasarkan slug
-    //     $page = Page::findBySlug($slug);
+   public function index()
+    {
+        
+        $limit_slideshow = 3;
+        $limit_news = 3;
+        $limit_announcement = 3;
 
-    //     if (! $page) {
-    //         abort(404, 'Halaman tidak ditemukan.');
-    //     }
+        $news = Article::with('category')
+            ->where('category_id', '=', 5)
+            ->where('featured', '!=', '1')
+            ->where('status', '=', 'PUBLISHED')
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->limit($limit_news)
+            ->get();
 
-    //     $data = [
-    //         'title' => $page->title,
-    //         'page'  => $page->withFakes(), // ambil data custom field juga
-    //     ];
+        $slideshows = Slideshow::with('page')
+            ->where('deleted_at', '=', NULL)
+            ->orderBy('order', 'ASC')
+            ->limit($limit_slideshow)
+            ->get();
 
-    //     // Render tampilan berdasarkan nama template halaman
-    //     return view('frontpage.' . $page->template, $data);
-    // }
+        $announcement = Article::with('category')
+            ->where('category_id', '=', 6)
+            ->where('featured', '!=', '1')
+            ->where('status', '=', 'PUBLISHED')
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->limit($limit_announcement)
+            ->get();
 
-    public function page($slug, $subs = null)
+        
+        // $data_frontpages = Page::where('template', '=', 'frontpage')
+        //     ->orderBy('extras', 'ASC')
+        //     ->get();
+
+        $data_pages = Page::where('template', '=', 'informasi_publik')
+            ->orWhere('template', '=', 'statistik')
+            ->get();
+
+        $menus = $this->create_tree();
+        $data_settings = Setting::all();
+        $stakeholders = Stakeholder::all();
+
+        // $frontpage = array();
+        $settings = array();
+        $informasipublik = array();
+        $statistik = array();
+
+        // foreach ($data_frontpages as $index => $value) {
+        //     $frontpage[$value->slug] = $value;
+        // }
+
+        foreach ($data_settings as $index => $value) {
+            $settings[$value->key] = $value;
+        }
+
+        foreach ($data_pages as $index => $value) {
+            if ($value->template == 'informasi_publik')
+                $informasipublik[$value->slug] = $value;
+
+
+            if ($value->template == 'statistik')
+                $statistik[$value->slug] = $value;
+        }
+
+        return view('frontpage.index')
+            // ->with('frontpage', $frontpage)
+            ->with('menus', $menus)
+            ->with('settings', $settings)
+            ->with('slideshows', $slideshows)
+            ->with('informasi_publik', $informasipublik)
+            ->with('statistik', $statistik)
+            ->with('stakeholders', $stakeholders)
+            ->with('news', $news)
+            ->with('pengumuman', $announcement);
+    }
+
+    public function page($slug)
     {
         $page = Page::findBySlugOrFail($slug);
 
         $menus = $this->create_tree();
         $data_settings = Setting::all();
 
-         $featured_news = Article::with(['category'])
-            ->where('featured', '=', '1')
-            ->orderBy('date', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->limit(5)
-            ->get();
+        // $featured_news = Article::with(['category'])
+        //     ->where('category_id', '=', 5)
+        //     ->where('featured', '=', '1')
+        //     ->orderBy('date', 'DESC')
+        //     ->orderBy('id', 'DESC')
+        //     ->limit(3)
+        //     ->get();
 
         $settings = array();
 
@@ -58,7 +119,9 @@ class PageController extends Controller
         }
 
         switch($page->template) {
-            case "umum":
+           
+
+            case "informasi_publik" :
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -66,20 +129,19 @@ class PageController extends Controller
                     }
                 }
 
-                if (View::exists('frontpage.templates.' . 'umum'))
-                    return view('frontpage.templates.' . 'umum')
+                if (View::exists('frontpage.page-templates.' . 'info_publik'))
+                    return view('frontpage.page-templates.' . 'info_publik')
                         ->with('menus', $menus)
-                        ->with('about', $page)
-                        ->with('about_extra', $page_extra)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-                return view('jurusan.templates.about')
-                    ->with('menus', $menus)
-                    ->with('about', $page)
-                    ->with('about_extra', $page_extra)
-                    ->with('settings', $settings);
-
-            case "sambutan_direktur" :
+                // return view('frontpage.page-templates.info_publik')
+                //     ->with('menus', $menus)
+                //     ->with('page', $page)
+                //     ->with('page_extra', $page_extra)
+                //     ->with('settings', $settings);
+             case "tentang_polije" :
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -87,43 +149,53 @@ class PageController extends Controller
                     }
                 }
 
-                if (View::exists('templates.' . 'about_direksi'))
-                    return view('templates.' . 'about_direksi')
+                if (View::exists('frontpage.page-templates.' . 'tentang_polije'))
+                    return view('frontpage.page-templates.' . 'tentang_polije')
                         ->with('menus', $menus)
-                        ->with('about', $page)
-                        ->with('about_extra', $page_extra)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-                return view('jurusan.templates.about_direksi')
-                    ->with('menus', $menus)
-                    ->with('about', $page)
-                    ->with('about_extra', $page_extra)
-                    ->with('settings', $settings);
+             case "profil_ppid" :
+                $page_extra = collect();
+                if (is_array($page->extras)) {
+                    foreach ($page->extras as $index => $value) {
+                        $page_extra->put($index, $value);
+                    }
+                }
+
+                if (View::exists('frontpage.page-templates.' . 'profil_ppid'))
+                    return view('frontpage.page-templates.' . 'profil_ppid')
+                        ->with('menus', $menus)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
+                        ->with('settings', $settings);
+
+            case "berkas" :
+                $page_extra = collect();
+                if (is_array($page->extras)) {
+                    foreach ($page->extras as $index => $value) {
+                        $page_extra->put($index, $value);
+                    }
+                }
+
+                if (View::exists('frontpage.page-templates.' . 'berkas'))
+                    return view('frontpage.page-templates.' . 'berkas')
+                        ->with('menus', $menus)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
+                        ->with('settings', $settings);
 
             default :
-                if (View::exists('templates.' . 'page'))
-                    return view('templates.' . 'page')
-                        ->with('featured_news', $featured_news)
+                if (View::exists('frontpage.' . 'page'))
+                    return view('frontpage.' . 'page')
+                        // ->with('featured_news', $featured_news)
+                        ->with('menus', $menus)
                         ->with('page', $page)
-                        ->with('settings', $settings)
-                        ->with('menus', $menus);
-
-                return view('jurusan.templates.page')
-                    ->with('featured_news', $featured_news)
-                    ->with('page', $page)
-                    ->with('settings', $settings)
-                    ->with('menus', $menus);
+                        ->with('settings', $settings);
         }
 
-        // if (!$page)
-        // {
-        //     abort(404, 'Please go back to our <a href="'.url('').'">homepage</a>.');
-        // }
 
-        // $this->data['title'] = $page->title;
-        // $this->data['page'] = $page->withFakes();
-
-        // return view('pages.'.$page->template, $this->data);
     }
 
     public function tree_element($entry, $key, $all_entries, $crud, $html)
@@ -256,88 +328,7 @@ class PageController extends Controller
         return $root_entries;
     }
 
-    public function index()
-    {
-        
-        $limit_news = 3;
-        $limit_slideshow = 3;
-        $limit_announcement = 3;
-
-        $slideshows = Slideshow::with('page')
-            ->where('deleted_at', '=', NULL)
-            ->orderBy('order', 'ASC')
-            ->limit($limit_slideshow)
-            ->get();
-
-        $announcement = Article::with('category')
-            ->where('category_id', '=', 6)
-            ->where('featured', '!=', '1')
-            ->where('status', '=', 'PUBLISHED')
-            ->orderBy('date', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->limit($limit_announcement)
-            ->get();
-
-        $news = Article::with('category')
-            ->where('category_id', '=', 5)
-            ->where('featured', '!=', '1')
-            ->where('status', '=', 'PUBLISHED')
-            ->orderBy('date', 'DESC')
-            ->orderBy('id', 'DESC')
-            ->limit($limit_news)
-            ->get();
-
-
-        $data_frontpages = Page::where('template', '=', 'frontpage')
-            ->orderBy('extras', 'ASC')
-            ->get();
-
-        $data_pages = Page::where('template', '=', 'informasi_publik')
-            ->orWhere('template', '=', 'rekapitulasi')
-            ->orWhere('template', '=', 'statistik')
-            ->get();
-
-        $data_settings = Setting::all();
-        $stakeholders = Stakeholder::all();
-        $menus = $this->create_tree();
-
-        $frontpage = array();
-         $informasi_publik = array();
-        $rekapitulasi = array();
-        $statistik = array();
-        $settings = array();
-
-        foreach ($data_settings as $index => $value) {
-            $settings[$value->key] = $value;
-        }
-
-        foreach ($data_frontpages as $index => $value) {
-            $frontpage[$value->slug] = $value;
-        }
-
-        foreach ($data_pages as $index => $value) {
-            if ($value->template == 'informasi_publik')
-                $informasi_publik[$value->slug] = $value;
-
-            if ($value->template == 'rekapitulasi')
-                $rekapitulasi[$value->slug] = $value;
-
-             if ($value->template == 'statistik')
-                $statistik[$value->slug] = $value;
-        }
-
-        return view('frontpage.index')
-            ->with('news', $news)
-            ->with('pengumuman', $announcement)
-            ->with('settings', $settings)
-            ->with('stakeholders', $stakeholders)
-            ->with('slideshows', $slideshows)
-            ->with('menus', $menus)
-             ->with('informasi_publik', $informasi_publik)
-            ->with('rekapitulasi', $rekapitulasi)
-            ->with('statistik', $statistik)
-            ->with('frontpage', $frontpage);
-    }
+    
 
      public function clear_cache()
     {

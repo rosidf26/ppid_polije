@@ -7,11 +7,10 @@
             <!-- Alamat Kantor -->
             <div class="col-md-6 col-lg-3 mb-5 mb-lg-0">
                 <h5 class="text-5 text-transform-none font-weight-semibold text-color-light mb-4">Kantor</h5>
-                <p class="text-4 mb-0">Jl. Mastrip PO BOX 164,</p>
-                <p class="text-4 mb-0">Jember - Jawa Timur - Indonesia</p>
+                <p class="text-4 mb-0">{{ $settings['contact_address']->value }}</p>
                 <br>
-                <p class="text-4 mb-0"><strong>Telp:</strong> +1 5589 55488 55</p>
-                <p class="text-4 mb-0"><strong>Email:</strong> info@example.com</p>
+                <p class="text-4 mb-0"><strong>Telp:</strong> {{ $settings['contact_phone']->value }}</p>
+                <p class="text-4 mb-0"><strong>Email:</strong> {{ $settings['contact_email']->value }}</p>
             </div>
 
             <!-- Jam Pelayanan Informasi -->
@@ -40,17 +39,17 @@
                 <h5 class="text-5 text-transform-none font-weight-semibold text-color-light mb-4">Media Sosial</h5>
                 <ul class="footer-social-icons social-icons m-0">
                     <li class="social-icons-facebook">
-                        <a href="#" target="_blank" title="Tiktok">
+                        <a href="{{ $settings['social_tiktok']->value }}" target="_blank" title="Tiktok">
                             <i class="fa-brands fa-tiktok"></i>
                         </a>
                     </li>
                     <li class="social-icons-twitter">
-                        <a href="#" target="_blank" title="Instagram">
+                        <a href="{{ $settings['social_instagram']->value }}" target="_blank" title="Instagram">
                             <i class="fa-brands fa-instagram"></i>
                         </a>
                     </li>
                     <li class="social-icons-linkedin">
-                        <a href="#" target="_blank" title="Youtube">
+                        <a href="{{ $settings['social_youtube']->value }}" target="_blank" title="Youtube">
                             <i class="fa-brands fa-youtube"></i>
                         </a>
                     </li>
@@ -64,12 +63,12 @@
         <div class="container py-2">
             <div class="row py-4">
                 <div class="col-lg-1 d-flex align-items-center justify-content-center justify-content-lg-start mb-2 mb-lg-0">
-                    <a href="index.html" class="logo pr-0 pr-lg-3">
-                        <img alt="Porto Website Template" src="{{ url('frontpage/img/ppid-footer.png') }}" class="opacity-5" height="33">
+                    <a href="#" class="logo pr-0 pr-lg-3">
+                        <img alt="Porto Website Template" src="{{ $settings['footer_logo_image']->value }}" class="opacity-5" height="33">
                     </a>
                 </div>
                 <div class="col-lg-7 d-flex align-items-center justify-content-center justify-content-lg-start mb-4 mb-lg-0">
-                    <p>© Copyright 2019. All Rights Reserved.</p>
+                    <p>© {{ $settings['website_title']->value }}, All Rights Reserved.</p>
                 </div>
             </div>
         </div>

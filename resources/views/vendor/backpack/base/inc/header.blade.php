@@ -24,7 +24,7 @@
             <div id="userbox" class="userbox">
                 <a href="#" data-toggle="dropdown">
                     <figure class="profile-picture">
-                        <img src="{{ url(config('app.url') . '/polije-admin/img/!sample-user.jpg') }}" alt="{{ backpack_auth()->user()->name }}" class="rounded-circle" data-lock-picture="{{ url(config('app.url') . '/polije-admin/img/!sample-user.jpg') }}">
+                        <img src="{{ url(config('app.url') . '/polije-admin/img/user.png') }}" alt="{{ backpack_auth()->user()->name }}" class="rounded-circle" data-lock-picture="{{ url(config('app.url') . '/polije-admin/img/!sample-user.jpg') }}">
                     </figure>
                     <div class="profile-info" data-lock-name="{{ backpack_auth()->user()->name }}" data-lock-email="{{ backpack_auth()->user()->email }}">
                         <span class="name">{{ backpack_auth()->user()->name }}</span>

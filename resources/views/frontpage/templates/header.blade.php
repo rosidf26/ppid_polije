@@ -8,7 +8,7 @@
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills text-uppercase text-2">
                                     <li class="nav-item nav-item-anim-icon d-none d-md-block">
-                                        <a class="nav-link pl-0" href="about-us.html"><i class="fas fa-angle-right"></i> Hubungi Kami</a>
+                                        <a class="nav-link pl-0" href="#"><i class="fas fa-angle-right"></i> Hubungi Kami</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -19,10 +19,10 @@
                             <nav class="header-nav-top">
                                 <ul class="nav nav-pills">
                                     <li class="nav-item">
-                                        <a href="mailto:mail@domain.com"><i class="far fa-envelope text-4 text-color-primary" style="top: 1px;"></i> mail@domain.com</a>
+                                        <a href="mailto:{{ $settings['contact_email']->value }}"><i class="far fa-envelope text-4 text-color-primary" style="top: 1px;"></i> {{ $settings['contact_email']->value }}</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="tel:123-456-7890"><i class="fab fa-whatsapp text-4 text-color-primary" style="top: 0;"></i> 123-456-7890</a>
+                                        <a href="tel:{{ $settings['contact_phone']->value }}"><i class="fab fa-whatsapp text-4 text-color-primary" style="top: 0;"></i> {{ $settings['contact_phone']->value }}</a>
                                     </li>
                                 </ul>
                             </nav>
@@ -37,7 +37,7 @@
                     <div class="header-row">
                         <div class="header-logo">
                             <a href="{{ url('/') }}">
-                                <img alt="Porto" width="130" height="50" src="{{ url('frontpage/img/logo.png') }}">
+                                <img alt="Porto" width="130" height="50" src="{{ $settings['header_logo_image']->value }}">
                             </a>
                         </div>
                     </div>

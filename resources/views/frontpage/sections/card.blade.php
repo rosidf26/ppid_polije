@@ -17,7 +17,7 @@
                          {{ (isset($value->extras['featured_content'])) ? $value->extras['featured_content'] : '' }}
                     </p>
                     <div class="mt-auto">
-                        <a href="{{ url($value->slug) }}" class="btn btn-primary btn-lg text-3 font-weight-semibold px-3 py-2" target="_blank">Selengkapnya</a>
+                        <a href="{{ url($value->slug) }}" class="btn btn-primary btn-lg text-3 font-weight-semibold px-3 py-2">Selengkapnya</a>
                     </div>
                 </div>
             </div>

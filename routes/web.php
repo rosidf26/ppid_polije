@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FrontpageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,36 +16,33 @@ use App\Http\Controllers\FrontpageController;
 //     return view('welcome');
 // });
 
-// Route untuk menampilkan data siswa
-// Route::get('/', [FrontpageController::class, 'index']);
 
  Route::get('/', 'PageController@index')
         ->name('home');
 
-Route::get('/sambutan-direktur', [FrontpageController::class, 'sambutan']);
-Route::get('/profil-polije', [FrontpageController::class, 'profil']);
-Route::get('/profil-ppid-polije', [FrontpageController::class, 'profil_ppid']);
-Route::get('/tugas-dan-fungsi-ppid-polije', [FrontpageController::class, 'tupoksi']);
-Route::get('/regulasi', [FrontpageController::class, 'regulasi']);
-Route::get('/daftar-informasi-publik', [FrontpageController::class, 'info_publik']);
-Route::get('/informasi-yang-dikecualikan', [FrontpageController::class, 'info_kecuali']);
-Route::get('/informasi-setiap-saat', [FrontpageController::class, 'info_setiapsaat']);
-Route::get('/informasi-berkala', [FrontpageController::class, 'info_berkala']);
-Route::get('/informasi-serta-merta', [FrontpageController::class, 'info_sertamerta']);
-Route::get('/rekapitulasi-permohonan-informasi-publik', [FrontpageController::class, 'rekapitulasi']);
-Route::get('/maklumat-pelayanan', [FrontpageController::class, 'maklumat']);
-Route::get('/standar-pelayanan', [FrontpageController::class, 'standar_pelayanan']);
-Route::get('/biaya-layanan', [FrontpageController::class, 'biaya_pelayanan']);
-Route::get('/prosedur-permohonan', [FrontpageController::class, 'prosedur_permohonan']);
-Route::get('/prosedur-pengajuan-keberatan', [FrontpageController::class, 'prosedur_keberatan']);
-Route::get('/prosedur-penyelesaian-sengketa', [FrontpageController::class, 'prosedur_sengketa']);
-Route::get('/berita', [FrontpageController::class, 'berita']);
-Route::get('/pengumuman', [FrontpageController::class, 'pengumuman']);
-Route::get('/faq', [FrontpageController::class, 'faq']);
-Route::get('/detail-berita', [FrontpageController::class, 'detail_berita']);
-Route::get('/detail-pengumuman', [FrontpageController::class, 'detail_pengumuman']);
-Route::get('/komentar', [FrontpageController::class, 'komentar']);
+Route::post('/contact-response', 'PageController@contact_response')
+        ->name('contact_us_response');
 
-/** CATCH-ALL ROUTE for Backpack/PageManager - needs to be at the end of your routes.php file  **/
-Route::get('{page}/{subs?}', ['uses' => '\App\Http\Controllers\PageController@index'])
-    ->where(['page' => '^(((?=(?!admin))(?=(?!\/)).))*$', 'subs' => '.*']);
+    Route::get('/faq', 'PageController@faq')
+        ->name('faq');
+
+    Route::get('/s', 'PageController@search')
+        ->name('search');
+
+    Route::get('/clear-cache', 'PageController@clear_cache')
+        ->name('clear_cache');
+
+    Route::get('/kategori/{category?}', 'PageController@category')
+        ->where(['category' => '[a-zA-Z0-9\-]+'])
+        ->name('category_article_list');
+
+    Route::get('/{page_slug}', 'PageController@page')
+        ->where(['page_slug' => '[a-zA-Z0-9\-]+'])
+        ->name('news-page_slug');
+
+    Route::get('/{category}/{article_slug}', 'PageController@news_detail')
+        ->where(['category' => '[a-zA-Z0-9\-]+', 'article_slug' => '[a-zA-Z0-9\-]+'])
+        ->name('news-detail');
+
+    Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
+        ->name('core.elfinder.connector');
