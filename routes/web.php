@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KomentarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +18,17 @@ use Illuminate\Support\Facades\Route;
 // });
 
 
- Route::get('/', 'PageController@index')
-        ->name('home');
+    Route::get('/', 'PageController@index')
+        ->name('beranda');
 
-Route::post('/contact-response', 'PageController@contact_response')
+    Route::post('/contact-response', 'PageController@contact_response')
         ->name('contact_us_response');
 
     Route::get('/faq', 'PageController@faq')
         ->name('faq');
+
+     Route::get('/komentar', 'PageController@komentar')
+        ->name('komentar');
 
     Route::get('/s', 'PageController@search')
         ->name('search');
@@ -46,3 +50,5 @@ Route::post('/contact-response', 'PageController@contact_response')
 
     Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
         ->name('core.elfinder.connector');
+    
+    Route::post('/kirim_komentar', [KomentarController::class, 'store'])->name('komentar.store');

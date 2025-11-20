@@ -320,6 +320,34 @@ trait PageTemplates
        
     }
 
+      private function layanan_informasi()
+    {
+
+         $this->crud->addField([
+            'name' => 'featured_image',
+            'label' => 'Featured Image',
+            'type' => 'browse',
+            'fake' => true,
+            'placeholder' => 'Featured Image',
+            'store_in' => 'extras',
+             'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ],
+        ]);
+
+        $this->crud->addField([
+            'name' => 'berkas',
+             'fake' => true,
+            'store_in' => 'extras',
+            'label' => 'Berkas',
+            'type' => 'browse',
+            'wrapperAttributes' => [
+                'class' => 'form-group col-md-6'
+            ],
+        ]);
+       
+    }
+
     private function statistik()
     {
         $this->crud->addField([

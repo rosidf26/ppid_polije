@@ -13,3 +13,4 @@
 <li><a class="nav-link" href="{{ backpack_url('stakeholder') }}"><i class="fas fa-link" area-hidden="true"></i> Tautan Terkait</a></li>
 <li><a class="nav-link" href="{{ backpack_url('slideshow') }}"><i class="fas fa-images" area-hidden="true"></i> Slideshows</a></li>
 <li><a class="nav-link" href="{{ backpack_url('setting') }}"><i class="fas fa-cog" area-hidden="true"></i> Settings</a></li>
+<li><a class="nav-link" href="{{ backpack_url('comment') }}"><i class="nav-icon la la-comment"></i> Komentar</a></li>

@@ -186,6 +186,21 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
+             case "layanan_informasi" :
+                $page_extra = collect();
+                if (is_array($page->extras)) {
+                    foreach ($page->extras as $index => $value) {
+                        $page_extra->put($index, $value);
+                    }
+                }
+
+                if (View::exists('frontpage.page-templates.' . 'layanan_info'))
+                    return view('frontpage.page-templates.' . 'layanan_info')
+                        ->with('menus', $menus)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
+                        ->with('settings', $settings);
+
             default :
                 if (View::exists('frontpage.' . 'page'))
                     return view('frontpage.' . 'page')
@@ -195,6 +210,42 @@ class PageController extends Controller
                         ->with('settings', $settings);
         }
 
+
+    }
+
+    public function faq()
+    {
+        $menus = $this->create_tree();
+        $data_settings = Setting::all();
+        $faq = Faq::paginate(10);
+
+        $settings = array();
+        foreach ($data_settings as $index => $value) {
+            $settings[$value->key] = $value;
+        }
+
+        if (View::exists('frontpage.page-templates.' . 'faq')) {
+            return view('frontpage.page-templates.' . 'faq')
+                ->with('menus', $menus)
+                ->with('settings', $settings)
+                ->with('faq', $faq);
+        } else return Redirect::route('beranda');
+    }
+
+    public function komentar()
+    {
+        $menus = $this->create_tree();
+        $data_settings = Setting::all();
+        $settings = array();
+        foreach ($data_settings as $index => $value) {
+            $settings[$value->key] = $value;
+        }
+
+         if (View::exists('frontpage.' . 'kirim_komentar')) {
+            return view('frontpage.' . 'kirim_komentar')
+                ->with('menus', $menus)
+                ->with('settings', $settings);
+        } else return Redirect::route('beranda');
 
     }
 
