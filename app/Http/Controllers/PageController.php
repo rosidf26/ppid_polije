@@ -5,6 +5,7 @@ use App\Models\Faq;
 use App\Models\Slideshow;
 use App\Models\Stakeholder;
 use Backpack\MenuCRUD\app\Models\MenuItem;
+use Backpack\NewsCRUD\app\Models\Tag;
 use Backpack\NewsCRUD\app\Models\Article;
 use Backpack\NewsCRUD\app\Models\Category;
 use Backpack\Settings\app\Models\Setting;
@@ -213,6 +214,192 @@ class PageController extends Controller
 
     }
 
+    public function category($slug = '')
+    {
+        // Load settings
+        $data_settings = Setting::all();
+        $settings = [];
+
+        foreach ($data_settings as $value) {
+            $settings[$value->key] = $value;
+        }
+
+        // Menus
+        $menus = $this->create_tree();
+
+        /**
+         * =========================
+         *  CASE 1: SLUG KOSONG
+         *  → tampilkan daftar kategori
+         *  → hanya kategori berita & pengumuman
+         * =========================
+         */
+        if ($slug == '') {
+            $category = Category::whereIn('slug', ['berita', 'pengumuman'])->get();
+
+            return view('jurusan.templates.kategori')
+                ->with('category', $category)
+                ->with('menus', $menus)
+                ->with('settings', $settings);
+        }
+
+        /**
+         * =========================
+         *  CASE 2: ADA SLUG
+         *  → pastikan slug hanya berita atau pengumuman
+         * =========================
+         */
+        // Batasi slug hanya 2 kategori ini
+        if (!in_array($slug, ['berita', 'pengumuman'])) {
+            abort(404);
+        }
+
+        // Ambil kategori berdasarkan slug
+        $category = Category::findBySlugOrFail($slug);
+
+        // Artikel di kategori tersebut
+        $articles = Article::where('category_id', $category->id)
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->paginate(6);
+             
+
+        if ($articles->count() <= 0) {
+            abort(404);
+        }
+
+        // TEMPLATE A → UNTUK BERITA
+        if ($slug === 'berita') {
+
+            $all_tags = Article::with('tags')
+                    ->get()
+                    ->pluck('tags')
+                    ->flatten()
+                    ->groupBy('id')
+                    ->map(function ($group) {
+                        return [
+                            'id'    => $group->first()->id,
+                            'name'  => $group->first()->name,
+                            'slug'  => $group->first()->slug,
+                            'count' => $group->count()
+                        ];
+                    })
+                    ->values();
+
+            return view('frontpage.page-templates.berita')
+                    ->with('articles', $articles)
+                    ->with('all_tags', $all_tags)
+                    ->with('menus', $menus)
+                    ->with('settings', $settings);
+        }
+
+        // TEMPLATE B → UNTUK PENGUMUMAN
+        if ($slug === 'pengumuman') {
+            return view('frontpage.page-templates.pengumuman')
+                    ->with('articles', $articles)
+                    ->with('menus', $menus)
+                    ->with('settings', $settings);
+        }
+
+        // fallback (seharusnya tidak pernah ke sini)
+        abort(404);
+
+    }
+
+    public function news_detail($category, $slug)
+    {
+        if ($category !== 'admin') {
+            $categories = $this->create_categories();
+
+            $article = Article::findBySlugOrFail($slug);
+
+            $menus = $this->create_tree();
+            $data_settings = Setting::all();
+
+            $news = Article::with(['category'])
+                ->where('slug', '!=', $slug)
+                ->where('category_id', '=', 5)
+                ->orderBy('date', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+
+            $tag = Article::with(['tags'])
+                ->where('slug', '=', $slug)
+                ->firstOrFail();
+
+            $settings = array();
+
+            foreach ($data_settings as $index => $value) {
+                $settings[$value->key] = $value;
+            }
+
+            if (View::exists('frontpage.page-templates.detail_berita')) {
+                return view('frontpage.page-templates.detail_berita')
+                    ->with('categories', $categories)
+                    ->with('news', $news)
+                    ->with('article_tag', $tag)
+                    ->with('article', $article)
+                    ->with('settings', $settings)
+                    ->with('menus', $menus);
+            }
+
+        } else {
+            abort(404);
+        }
+    }
+
+   public function tag($slug)
+{
+    // LOAD SETTINGS
+    $data_settings = Setting::all();
+    $settings = [];
+
+    foreach ($data_settings as $value) {
+        $settings[$value->key] = $value;
+    }
+
+    // MENUS
+    $menus = $this->create_tree();
+
+    // TAG BACKPACK
+    $tag = \Backpack\NewsCRUD\app\Models\Tag::where('slug', $slug)->firstOrFail();
+
+    // ARTIKEL YANG MENGGUNAKAN TAG TERSEBUT
+    $articles = Article::whereHas('tags', function ($q) use ($tag) {
+            $q->where('tags.id', $tag->id);
+        })
+        ->where('status', 'PUBLISHED')
+        ->where('date', '<=', date('Y-m-d'))
+        ->orderBy('date', 'DESC')
+        ->paginate(6);
+
+    // SEMUA TAG + JUMLAHNYA
+    $all_tags = Article::with('tags')
+        ->get()
+        ->pluck('tags')
+        ->flatten()
+        ->groupBy('id')
+        ->map(function ($group) {
+            return [
+                'id'    => $group->first()->id,
+                'name'  => $group->first()->name,
+                'slug'  => $group->first()->slug,
+                'count' => $group->count(),
+            ];
+        })
+        ->values();
+
+    return view('frontpage.page-templates.tag')
+        ->with('articles', $articles)
+        ->with('tag', $tag)
+        ->with('all_tags', $all_tags)
+        ->with('menus', $menus)
+        ->with('settings', $settings);
+}
+
+
+
     public function faq()
     {
         $menus = $this->create_tree();
@@ -322,7 +509,7 @@ class PageController extends Controller
             $html_loop = '';
 
             $class_type = ($entry->depth == '1' || ($entry->parent_id == '')) ? "nav-item" : "nav-item";
-            $html .= '<li ' . ((count($children)) ? 'class="' . $class_type . '"' : '') . '><a class="nav-link ' . ((count($children) && ($entry->depth == '1')) ? '' : '') . '" href="' . url('/kategori/' . $entry->slug) . '">' . $entry->name . '</a>';
+            $html .= '<li class="nav-item"' . ((count($children)) ? 'class="' . $class_type . '"' : '') . '><a class="nav-link ' . ((count($children) && ($entry->depth == '1')) ? '' : '') . '" href="' . url('/kategori/' . $entry->slug) . '">' . $entry->name . '</a>';
 
             if (count($children) > 0) {
                 // show the tree element

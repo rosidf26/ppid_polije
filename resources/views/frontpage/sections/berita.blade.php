@@ -48,9 +48,9 @@
        @foreach($pengumuman as $index => $value)
       <article class="post d-flex align-items-start p-3 border rounded shadow-sm mb-3 bg-white">
         <div class="post-date text-center bg-primary text-white rounded flex-shrink-0 me-3 p-2 custom-date">
-          <span class="day d-block fw-bold fs-4">{{ strftime("%e", strtotime($value->date)) }}</span>
+          <span class="day d-block fw-bold fs-4">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('d') }}</span>
           <span class="month text-uppercase small">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('M') }}</span>
-          <span class="year small opacity-75">{{ strftime("%Y", strtotime($value->date)) }}</span>
+          <span class="year small opacity-75">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('Y') }}</span>
         </div>
         <div class="flex-grow-1">
           <h4 class="fw-semibold mb-2">

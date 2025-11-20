@@ -37,7 +37,7 @@
                     <div class="header-row">
                         <div class="header-logo">
                             <a href="{{ url('/') }}">
-                                <img alt="Porto" width="130" height="50" src="{{ $settings['header_logo_image']->value }}">
+                                <img alt="Logo Header PPID POLIJE" width="130" height="50" src="{{ url($settings['header_logo_image']->value) }}">
                             </a>
                         </div>
                     </div>

@@ -52,3 +52,5 @@ use App\Http\Controllers\KomentarController;
         ->name('core.elfinder.connector');
     
     Route::post('/kirim_komentar', [KomentarController::class, 'store'])->name('komentar.store');
+
+    Route::get('/tag/{slug}', 'PageController@tag')->name('tag.filter');
