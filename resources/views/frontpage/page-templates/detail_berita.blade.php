@@ -32,13 +32,29 @@
           <div class="row">
             <div class="col-lg-3">
                 <aside class="sidebar">
+                  <form action="{{ route('search_news') }}" method="get">
+									<div class="input-group mb-3 pb-1">
+										<input class="form-control text-1" placeholder="Cari berita..." name="q" id="q" type="text">
+										<span class="input-group-append">
+											<button type="submit" class="btn btn-dark text-1 p-2"><i class="fas fa-search m-2"></i></button>
+										</span>
+									</div>
+								</form>
+                <h5 class="font-weight-bold pt-4">Tags</h5>
+								@if(isset($all_tags) && $all_tags->count() > 0)
+								<ul class="nav nav-list flex-column mb-5">
+									 @foreach ($all_tags as $tg)
+									<li class="nav-item"><a class="nav-link {{ request()->segment(3) == $tg->slug ? 'active' : '' }}" href="{{ route('tag.filter', $tg->slug) }}"> {{ $tg->name }} ({{ $tg->articles_count }})</a></li>
+									@endforeach
+								</ul>
+								@endif
 								<!-- <h5 class="font-weight-bold pt-4">Kategori Publikasi</h5>
 								<ul class="nav nav-list flex-column mb-5">
                     @foreach($categories as $index => $value)
                                             {!! $value !!}
                                             @endforeach
 								</ul> -->
-                <div class="tabs tabs-dark mb-4 pb-2">
+                <!-- <div class="tabs tabs-dark mb-4 pb-2">
 									<ul class="nav nav-tabs">
 										<li class="nav-item active"><a class="nav-link show active text-1 font-weight-bold text-uppercase" href="#" data-toggle="tab">Berita Lainnya</a></li>
 									</ul>
@@ -64,9 +80,9 @@
                         @endforeach
 											</ul>
 										</div>
-                </div>
+                </div> -->
 								
-							</aside>
+							  </aside>
             </div>
             <div class="col-lg-9">
               <div class="blog-posts single-post">

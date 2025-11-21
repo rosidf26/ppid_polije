@@ -30,8 +30,8 @@ use App\Http\Controllers\KomentarController;
      Route::get('/komentar', 'PageController@komentar')
         ->name('komentar');
 
-    Route::get('/s', 'PageController@search')
-        ->name('search');
+    Route::get('/cari-berita', 'PageController@search_news')
+        ->name('search_news');
 
     Route::get('/clear-cache', 'PageController@clear_cache')
         ->name('clear_cache');
@@ -53,4 +53,4 @@ use App\Http\Controllers\KomentarController;
     
     Route::post('/kirim_komentar', [KomentarController::class, 'store'])->name('komentar.store');
 
-    Route::get('/tag/{slug}', 'PageController@tag')->name('tag.filter');
+    Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');

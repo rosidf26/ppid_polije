@@ -261,7 +261,7 @@ class PageController extends Controller
         $articles = Article::where('category_id', $category->id)
             ->orderBy('date', 'DESC')
             ->orderBy('id', 'DESC')
-            ->paginate(6);
+            ->paginate(4);
              
 
         if ($articles->count() <= 0) {
@@ -271,20 +271,8 @@ class PageController extends Controller
         // TEMPLATE A → UNTUK BERITA
         if ($slug === 'berita') {
 
-            $all_tags = Article::with('tags')
-                    ->get()
-                    ->pluck('tags')
-                    ->flatten()
-                    ->groupBy('id')
-                    ->map(function ($group) {
-                        return [
-                            'id'    => $group->first()->id,
-                            'name'  => $group->first()->name,
-                            'slug'  => $group->first()->slug,
-                            'count' => $group->count()
-                        ];
-                    })
-                    ->values();
+        // MEMANGGIL HELPER RELASI TAG + ARTIKEL
+         $all_tags = berita_tags();
 
             return view('frontpage.page-templates.berita')
                     ->with('articles', $articles)
@@ -328,6 +316,8 @@ class PageController extends Controller
                 ->where('slug', '=', $slug)
                 ->firstOrFail();
 
+                   $all_tags = berita_tags();
+
             $settings = array();
 
             foreach ($data_settings as $index => $value) {
@@ -338,6 +328,7 @@ class PageController extends Controller
                 return view('frontpage.page-templates.detail_berita')
                     ->with('categories', $categories)
                     ->with('news', $news)
+                    ->with('all_tags', $all_tags)
                     ->with('article_tag', $tag)
                     ->with('article', $article)
                     ->with('settings', $settings)
@@ -349,7 +340,7 @@ class PageController extends Controller
         }
     }
 
-   public function tag($slug)
+public function tag($slug)
 {
     // LOAD SETTINGS
     $data_settings = Setting::all();
@@ -362,33 +353,21 @@ class PageController extends Controller
     // MENUS
     $menus = $this->create_tree();
 
-    // TAG BACKPACK
-    $tag = \Backpack\NewsCRUD\app\Models\Tag::where('slug', $slug)->firstOrFail();
+    // AMBIL TAG
+    $tag = Tag::where('slug', $slug)->firstOrFail();
 
-    // ARTIKEL YANG MENGGUNAKAN TAG TERSEBUT
+    // ARTIKEL BERDASARKAN TAG INI
     $articles = Article::whereHas('tags', function ($q) use ($tag) {
             $q->where('tags.id', $tag->id);
         })
+        ->where('category_id', '=', 5)
         ->where('status', 'PUBLISHED')
-        ->where('date', '<=', date('Y-m-d'))
         ->orderBy('date', 'DESC')
+        ->orderBy('id', 'DESC')
         ->paginate(6);
 
-    // SEMUA TAG + JUMLAHNYA
-    $all_tags = Article::with('tags')
-        ->get()
-        ->pluck('tags')
-        ->flatten()
-        ->groupBy('id')
-        ->map(function ($group) {
-            return [
-                'id'    => $group->first()->id,
-                'name'  => $group->first()->name,
-                'slug'  => $group->first()->slug,
-                'count' => $group->count(),
-            ];
-        })
-        ->values();
+    // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
+    $all_tags = berita_tags();
 
     return view('frontpage.page-templates.tag')
         ->with('articles', $articles)
@@ -398,7 +377,30 @@ class PageController extends Controller
         ->with('settings', $settings);
 }
 
+    public function search_news(Request $request) {
+        $article = Article::where(function($query) use ($request) {
+            $query->where('title', 'like', '%' . $request->get('q') . '%');
+        })->where('status', 'PUBLISHED')
+         ->where('category_id', '=', 5)
+            ->paginate(10);
 
+        $menus = $this->create_tree();
+
+        $data_settings = Setting::all();
+        $settings = array();
+
+        foreach ($data_settings as $index => $value) {
+            $settings[$value->key] = $value;
+        }
+
+        if (View::exists('frontpage.page-templates.hasil_cari')) {
+            return view('frontpage.page-templates.hasil_cari')
+                ->with('request', $request)
+                ->with('article', $article)
+                ->with('settings', $settings)
+                ->with('menus', $menus);
+        }
+    }
 
     public function faq()
     {

@@ -20,21 +20,22 @@
 					<div class="row">
 						<div class="col-lg-3">
 							<aside class="sidebar">
-								<form action="page-search-results.html" method="get">
+								<form action="{{ route('search_news') }}" method="get">
 									<div class="input-group mb-3 pb-1">
-										<input class="form-control text-1" placeholder="Cari berita..." name="s" id="s" type="text">
+										<input class="form-control text-1" placeholder="Cari berita..." name="q" id="q">
 										<span class="input-group-append">
 											<button type="submit" class="btn btn-dark text-1 p-2"><i class="fas fa-search m-2"></i></button>
 										</span>
 									</div>
 								</form>
 								<h5 class="font-weight-bold pt-4">Tags</h5>
+								@if(isset($all_tags) && $all_tags->count() > 0)
 								<ul class="nav nav-list flex-column mb-5">
-									@foreach($all_tags as $tag)
-									<li class="nav-item"><a class="nav-link" href="{{ url('tag/' . $tag['slug']) }}">{{ $tag['name'] }} ({{ $tag['count'] }})</a></li>
+									 @foreach ($all_tags as $tg)
+									<li class="nav-item"><a class="nav-link {{ request()->segment(3) == $tg->slug ? 'active' : '' }}" href="{{ route('tag.filter', $tg->slug) }}"> {{ $tg->name }} ({{ $tg->articles_count }})</a></li>
 									@endforeach
 								</ul>
-								
+								@endif
 							</aside>
 						</div>
 						<div class="col-lg-9">
@@ -61,8 +62,7 @@
 											<div class="post-meta">
 												<span><i class="far fa-calendar-alt"></i> {{ tgl_indo($value->date) }} </span>
 												<span><i class="far fa-user"></i> By <a>Admin</a> </span>
-												 @if($value->tags->count())
-												 @endif
+												
 												<span><i class="far fa-folder"></i> 
 												 @foreach($value->tags as $tag)
 												<a>{{ $tag->name }}</a>{{ !$loop->last ? ',' : '' }}
