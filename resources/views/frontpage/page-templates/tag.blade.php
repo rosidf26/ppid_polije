@@ -20,9 +20,9 @@
 					<div class="row">
 						<div class="col-lg-3">
 							<aside class="sidebar">
-								<form action="page-search-results.html" method="get">
+								<form action="{{ route('search_news') }}" method="get">
 									<div class="input-group mb-3 pb-1">
-										<input class="form-control text-1" placeholder="Cari berita..." name="s" id="s" type="text">
+										<input class="form-control text-1" placeholder="Cari berita..." name="q" id="q">
 										<span class="input-group-append">
 											<button type="submit" class="btn btn-dark text-1 p-2"><i class="fas fa-search m-2"></i></button>
 										</span>

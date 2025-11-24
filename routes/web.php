@@ -33,12 +33,15 @@ use App\Http\Controllers\KomentarController;
     Route::get('/cari-berita', 'PageController@search_news')
         ->name('search_news');
 
+    Route::get('/cari-pengumuman', 'PageController@search_announce')
+        ->name('search_announce');
+
     Route::get('/clear-cache', 'PageController@clear_cache')
         ->name('clear_cache');
 
     Route::get('/kategori/{category?}', 'PageController@category')
         ->where(['category' => '[a-zA-Z0-9\-]+'])
-        ->name('category_article_list');
+        ->name('category_publikasi');
 
     Route::get('/{page_slug}', 'PageController@page')
         ->where(['page_slug' => '[a-zA-Z0-9\-]+'])
@@ -54,3 +57,5 @@ use App\Http\Controllers\KomentarController;
     Route::post('/kirim_komentar', [KomentarController::class, 'store'])->name('komentar.store');
 
     Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
+
+    Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');

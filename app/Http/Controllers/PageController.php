@@ -283,8 +283,12 @@ class PageController extends Controller
 
         // TEMPLATE B → UNTUK PENGUMUMAN
         if ($slug === 'pengumuman') {
+
+            $all_tags = pengumuman_tags();
+
             return view('frontpage.page-templates.pengumuman')
                     ->with('articles', $articles)
+                    ->with('all_tags', $all_tags)
                     ->with('menus', $menus)
                     ->with('settings', $settings);
         }
@@ -297,6 +301,7 @@ class PageController extends Controller
     public function news_detail($category, $slug)
     {
         if ($category !== 'admin') {
+
             $categories = $this->create_categories();
 
             $article = Article::findBySlugOrFail($slug);
@@ -304,19 +309,10 @@ class PageController extends Controller
             $menus = $this->create_tree();
             $data_settings = Setting::all();
 
-            $news = Article::with(['category'])
-                ->where('slug', '!=', $slug)
-                ->where('category_id', '=', 5)
-                ->orderBy('date', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->limit(5)
-                ->get();
-
+            
             $tag = Article::with(['tags'])
                 ->where('slug', '=', $slug)
                 ->firstOrFail();
-
-                   $all_tags = berita_tags();
 
             $settings = array();
 
@@ -324,7 +320,18 @@ class PageController extends Controller
                 $settings[$value->key] = $value;
             }
 
-            if (View::exists('frontpage.page-templates.detail_berita')) {
+            // Pilih view berdasarkan kategori
+            if ($category === 'berita') {
+                $news = Article::with(['category'])
+                ->where('slug', '!=', $slug)
+                ->where('category_id', '=', 5)
+                ->orderBy('date', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+
+                $all_tags = berita_tags();
+
                 return view('frontpage.page-templates.detail_berita')
                     ->with('categories', $categories)
                     ->with('news', $news)
@@ -333,6 +340,28 @@ class PageController extends Controller
                     ->with('article', $article)
                     ->with('settings', $settings)
                     ->with('menus', $menus);
+            }
+
+            if ($category === 'pengumuman') {
+                 $news = Article::with(['category'])
+                ->where('slug', '!=', $slug)
+                ->where('category_id', '=', 6)
+                ->orderBy('date', 'DESC')
+                ->orderBy('id', 'DESC')
+                ->limit(5)
+                ->get();
+
+                 $all_tags = pengumuman_tags();
+
+                 return view('frontpage.page-templates.detail_pengumuman')
+                    ->with('categories', $categories)
+                    ->with('news', $news)
+                    ->with('all_tags', $all_tags)
+                    ->with('pengumuman_tag', $tag)
+                    ->with('article', $article)
+                    ->with('settings', $settings)
+                    ->with('menus', $menus);
+                
             }
 
         } else {
@@ -377,6 +406,43 @@ public function tag($slug)
         ->with('settings', $settings);
 }
 
+public function tag_announce($slug)
+{
+    // LOAD SETTINGS
+    $data_settings = Setting::all();
+    $settings = [];
+
+    foreach ($data_settings as $value) {
+        $settings[$value->key] = $value;
+    }
+
+    // MENUS
+    $menus = $this->create_tree();
+
+    // AMBIL TAG
+    $tag = Tag::where('slug', $slug)->firstOrFail();
+
+    // ARTIKEL BERDASARKAN TAG INI
+    $articles = Article::whereHas('tags', function ($q) use ($tag) {
+            $q->where('tags.id', $tag->id);
+        })
+        ->where('category_id', '=', 6)
+        ->where('status', 'PUBLISHED')
+        ->orderBy('date', 'DESC')
+        ->orderBy('id', 'DESC')
+        ->paginate(6);
+
+    // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
+    $all_tags = pengumuman_tags();
+
+    return view('frontpage.page-templates.tag_pengumuman')
+        ->with('articles', $articles)
+        ->with('tag', $tag)
+        ->with('all_tags', $all_tags)
+        ->with('menus', $menus)
+        ->with('settings', $settings);
+}
+
     public function search_news(Request $request) {
         $article = Article::where(function($query) use ($request) {
             $query->where('title', 'like', '%' . $request->get('q') . '%');
@@ -395,6 +461,31 @@ public function tag($slug)
 
         if (View::exists('frontpage.page-templates.hasil_cari')) {
             return view('frontpage.page-templates.hasil_cari')
+                ->with('request', $request)
+                ->with('article', $article)
+                ->with('settings', $settings)
+                ->with('menus', $menus);
+        }
+    }
+
+     public function search_announce(Request $request) {
+        $article = Article::where(function($query) use ($request) {
+            $query->where('title', 'like', '%' . $request->get('p') . '%');
+        })->where('status', 'PUBLISHED')
+         ->where('category_id', '=', 6)
+            ->paginate(10);
+
+        $menus = $this->create_tree();
+
+        $data_settings = Setting::all();
+        $settings = array();
+
+        foreach ($data_settings as $index => $value) {
+            $settings[$value->key] = $value;
+        }
+
+        if (View::exists('frontpage.page-templates.hasil_cari_announce')) {
+            return view('frontpage.page-templates.hasil_cari_announce')
                 ->with('request', $request)
                 ->with('article', $article)
                 ->with('settings', $settings)

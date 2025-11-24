@@ -188,7 +188,27 @@ article.post .post-date .year {
     font-size: medium !important;
 }
 
+/* untuk list pengumuman */
+.post-equal,
+.post,
+.post .row {
+    height: 100%;
+}
 
+.post .col {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* optional: crop otomatis */
+.text-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* jumlah baris */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
 
 
 

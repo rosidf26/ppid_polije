@@ -101,7 +101,7 @@
 
                   <div class="post-content ml-0">
                     <h2 class="font-weight-bold">
-                      <a href="#">{{ $article->title }}</a>
+                      <a class="text-primary">{{ $article->title }}</a>
                     </h2>
 
                     <div class="post-meta">

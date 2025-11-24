@@ -43,3 +43,18 @@ if (! function_exists('berita_tags')) {
     ->get();
     }
 }
+
+if (! function_exists('pengumuman_tags')) {
+    function pengumuman_tags()
+    {
+        return Tag::select('tags.id', 'tags.name', 'tags.slug')
+    ->join('article_tag', 'article_tag.tag_id', '=', 'tags.id')
+    ->join('articles', 'articles.id', '=', 'article_tag.article_id')
+    ->where('articles.category_id', 6)
+    ->where('articles.status', 'PUBLISHED')
+    ->groupBy('tags.id', 'tags.name', 'tags.slug')
+    ->selectRaw('COUNT(articles.id) as announce_count')
+    ->orderBy('tags.id', 'ASC')
+    ->get();
+    }
+}
