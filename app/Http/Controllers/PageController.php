@@ -11,6 +11,8 @@ use Backpack\NewsCRUD\app\Models\Category;
 use Backpack\Settings\app\Models\Setting;
 use Backpack\PageManager\app\Models\Page;
 use Carbon\Carbon;
+use Google\Client;
+use Google\Service\Sheets;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -67,7 +69,7 @@ class PageController extends Controller
         // $frontpage = array();
         $settings = array();
         $informasipublik = array();
-        $statistik = array();
+        // $statistik = array();
 
         // foreach ($data_frontpages as $index => $value) {
         //     $frontpage[$value->slug] = $value;
@@ -82,9 +84,47 @@ class PageController extends Controller
                 $informasipublik[$value->slug] = $value;
 
 
-            if ($value->template == 'statistik')
-                $statistik[$value->slug] = $value;
+            // if ($value->template == 'statistik')
+            //     $statistik[$value->slug] = $value;
         }
+
+        // ============================================================
+    //   🔥 Tambahkan Bagian Statistik Google Sheets di sini
+    // ============================================================
+
+    $client = new \Google\Client();
+    $client->setAuthConfig(storage_path('app/google/credentials.json'));
+    $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
+
+    $service = new \Google\Service\Sheets($client);
+
+    $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
+    $range = 'PermohonanInformasi!A:D';
+
+    $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+    $rows = $response->getValues();
+
+    array_shift($rows); // Hapus header
+
+    // Kolom D = status permohonan (index 3)
+    $statusA = 'diterima';
+    $statusB = 'ditolak';
+
+    $countA = collect($rows)->filter(function($row) use ($statusA) {
+        return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
+    })->count();
+
+    $countB = collect($rows)->filter(function($row) use ($statusB) {
+        return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
+    })->count();
+
+    $total = count($rows);
+
+
+    // ============================================================
+    //      🔥 Kirim variabel statistik ke view index
+    // ============================================================
+
 
         return view('frontpage.index')
             // ->with('frontpage', $frontpage)
@@ -92,10 +132,13 @@ class PageController extends Controller
             ->with('settings', $settings)
             ->with('slideshows', $slideshows)
             ->with('informasi_publik', $informasipublik)
-            ->with('statistik', $statistik)
+            // ->with('statistik', $statistik)
             ->with('stakeholders', $stakeholders)
             ->with('news', $news)
-            ->with('pengumuman', $announcement);
+            ->with('pengumuman', $announcement)
+             ->with('countA', $countA)
+        ->with('countB', $countB)
+        ->with('total', $total);
     }
 
     public function page($slug)
@@ -658,6 +701,48 @@ public function tag_announce($slug)
 
         return $root_entries;
     }
+
+
+   public function countTwoStatus()
+{
+    // --- Google Sheets API ---
+    $client = new \Google\Client();
+    $client->setAuthConfig(storage_path('app/google/credentials.json'));
+    $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
+
+    $service = new \Google\Service\Sheets($client);
+
+    $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
+    $range = 'PermohonanInformasi!A:D'; // Kolom hanya sampai D
+
+    $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+    $rows = $response->getValues();
+
+    // Hapus header
+    array_shift($rows);
+
+    // --- Status yang ingin dihitung ---
+    $statusA = 'diterima';
+    $statusB = 'ditolak';
+
+    // --- Hitung kondisi pertama ---
+    $countA = collect($rows)->filter(function ($row) use ($statusA) {
+        return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
+    })->count();  // Kolom D = index 3
+
+    // --- Hitung kondisi kedua ---
+    $countB = collect($rows)->filter(function ($row) use ($statusB) {
+        return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
+    })->count();
+
+    // --- Hitung total (semua data) ---
+    $total = count($rows);
+
+    return view('frontpage.sections.statistik', compact('countA', 'countB', 'total'));
+}
+
+
+
 
     
 

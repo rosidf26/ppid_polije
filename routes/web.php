@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KomentarController;
 
 /*
 |--------------------------------------------------------------------------
@@ -54,8 +53,10 @@ use App\Http\Controllers\KomentarController;
     Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
         ->name('core.elfinder.connector');
     
-    Route::post('/kirim_komentar', [KomentarController::class, 'store'])->name('komentar.store');
+    Route::post('/kirim_komentar', 'KomentarController@store')->name('komentar.store');
 
     Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
 
     Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
+
+    Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
