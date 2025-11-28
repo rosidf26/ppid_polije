@@ -245,6 +245,21 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
+             case "e_blangko_permohonan_informasi" :
+                $page_extra = collect();
+                if (is_array($page->extras)) {
+                    foreach ($page->extras as $index => $value) {
+                        $page_extra->put($index, $value);
+                    }
+                }
+
+                if (View::exists('frontpage.page-templates.' . 'permohonan_informasi'))
+                    return view('frontpage.page-templates.' . 'permohonan_informasi')
+                        ->with('menus', $menus)
+                        ->with('page', $page)
+                        ->with('page_extra', $page_extra)
+                        ->with('settings', $settings);
+
             default :
                 if (View::exists('frontpage.' . 'page'))
                     return view('frontpage.' . 'page')

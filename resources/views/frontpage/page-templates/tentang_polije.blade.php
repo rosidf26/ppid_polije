@@ -26,16 +26,34 @@
                             <article class="post post-large blog-single-post border-0 m-0 p-0">
 
                                 <div class="post-image ml-0">
-                                    <div class="owl-carousel owl-theme show-nav-hover dots-inside nav-inside nav-style-1 nav-light" data-plugin-options="{'items': 1, 'margin': 10, 'loop': false, 'nav': true, 'dots': true}">
-                                    @foreach ($page_extra as $key => $path)
-                                     @continue(!is_string($path))
-                                    <div>
-                                            <div class="img-thumbnail border-0 p-0 d-block">
-                                                <img class="img-fluid border-radius-0" src="{{ url($path) }}" alt="">
+                                    @php
+                                    // Filter hanya yang berupa string dan mengandung pola path gambar
+                                    $images = $page_extra->filter(function ($item, $key) {
+                                        return is_string($item)
+                                            && !empty($item)
+                                            && str_starts_with($item, 'uploads'); // atau pola lain sesuai kebutuhanmu
+                                    });
+                                @endphp
+
+                                @if ($images->count() === 1)
+                                    {{-- Hanya satu gambar --}}
+                                    <img class="img-fluid border-radius-0" src="{{ url($images->first()) }}" alt="">
+                                @elseif ($images->count() > 1)
+                                    {{-- Lebih dari satu gambar → Carousel --}}
+                                    <div class="owl-carousel owl-theme show-nav-hover dots-inside nav-inside nav-style-1 nav-light"
+                                        data-plugin-options="{'items': 1, 'margin': 10, 'loop': false, 'nav': true, 'dots': true}">
+                                        
+                                        @foreach ($images as $path)
+                                            <div>
+                                                <div class="img-thumbnail border-0 p-0 d-block">
+                                                    <img class="img-fluid border-radius-0" src="{{ url($path) }}" alt="">
+                                                </div>
                                             </div>
-                                        </div>
-                                         @endforeach
+                                        @endforeach
+
                                     </div>
+                                @endif
+
                                 </div>
 
                                 <div class="post-content ml-0">
@@ -44,13 +62,22 @@
 
                                 </div>
 
-                                @if (!empty($page_extra->get('id_youtube')))
+                                @php
+                                    $youtube_id = extractYoutubeId($page_extra->get('id_youtube'));
+                                @endphp
+
+                                @if ($youtube_id)
                                 <div class="post-image ml-0">
                                     <div class="embed-responsive embed-responsive-16by9">
-                                        <iframe src="https://www.youtube.com/embed/{{ $page_extra->get('id_youtube') }}?autoplay=1&mute=1"></iframe>
+                                    <iframe 
+    src="https://www.youtube-nocookie.com/embed/{{ $youtube_id }}?autoplay=1&mute=1"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen
+    frameborder="0">
+</iframe>
                                     </div>
                                 </div>
-@endif
+                                @endif
                             </article>
 
                         </div>

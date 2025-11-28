@@ -19,7 +19,7 @@ trait PageTemplates
     | - page title
     | - page slug
     */
-
+    
      private function informasi_publik()
     {
         $this->crud->addField([
@@ -418,7 +418,12 @@ trait PageTemplates
 
     }
 
-    private function umum()
+    private function e_blangko_permohonan_informasi()
+    {
+       
+    }
+
+       private function umum()
     {
          $this->crud->addField([
             'name' => 'content',
@@ -434,6 +439,5 @@ trait PageTemplates
             ]
         ]);
     }
-
-    
+   
 }

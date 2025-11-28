@@ -58,3 +58,31 @@ if (! function_exists('pengumuman_tags')) {
     ->get();
     }
 }
+
+if (!function_exists('extractYoutubeId')) {
+    function extractYoutubeId($input)
+    {
+        if (!is_string($input) || empty($input)) {
+            return null;
+        }
+
+        // Daftar regex untuk berbagai format YouTube
+        $patterns = [
+            '/youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/',   // watch?v=
+            '/youtu\.be\/([a-zA-Z0-9_-]+)/',               // youtu.be
+            '/youtube\.com\/embed\/([a-zA-Z0-9_-]+)/',     // embed
+            '/youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/',    // shorts
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $input, $matches)) {
+                return $matches[1]; // Kembalikan ID video
+            }
+        }
+
+        // Jika bukan URL, mungkin hanya ID → sanitasi
+        $clean = preg_replace('/[^a-zA-Z0-9_-]/', '', $input);
+
+        return !empty($clean) ? $clean : null;
+    }
+}
