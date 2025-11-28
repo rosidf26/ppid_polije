@@ -4666,6 +4666,10 @@ window.theme.fn = {
 					var target = $(this).attr('href'),
 						offset = ($(this).is("[data-hash-offset]") ? $(this).data('hash-offset') : 0);
 
+				if (!target || !target.startsWith('#') || target.length === 1 || $(target).length === 0) {
+    return; // abaikan
+}
+
 					if($(target).get(0)) {
 						$(this).on('click', function(e) {
 							e.preventDefault();

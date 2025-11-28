@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\BackpackGoogleController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -60,3 +60,14 @@ use Illuminate\Support\Facades\Route;
     Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
 
     Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
+
+  Route::group([
+  'prefix' => 'admin',
+  'middleware' => ['web'],
+], function() {
+    Route::get('login/google', [BackpackGoogleController::class, 'redirectToGoogle'])
+       ->name('backpack.auth.google.redirect');
+
+    Route::get('login/google/callback', [BackpackGoogleController::class, 'handleGoogleCallback'])
+       ->name('backpack.auth.google.callback');
+});

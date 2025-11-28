@@ -54,7 +54,7 @@
         </div>
         <div class="flex-grow-1">
           <h4 class="fw-semibold mb-2">
-            <a href="{{ url('detail-pengumuman') }}" class="text-decoration-none text-dark">
+            <a href="{{ $value->category->slug . '/' . $value->slug }}" class="text-decoration-none text-dark">
               {{ $value->title }}
             </a>
           </h4>

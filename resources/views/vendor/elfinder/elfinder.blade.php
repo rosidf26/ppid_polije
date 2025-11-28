@@ -33,12 +33,12 @@
                 $('#elfinder').elfinder({
                     // set your elFinder options here
                     @if($locale)
-                        lang: '{{ $locale }}', // locale
+                        lang: '{{ $locale }}', 
                     @endif
                     customData: { 
                         _token: '{{ csrf_token() }}'
                     },
-                    height: windows_height(),
+                    height: '100%',
                     url : '{{ route("elfinder.connector") }}',  // connector URL
                     soundPath: '{{ asset($dir.'/sounds') }}'
                 });
