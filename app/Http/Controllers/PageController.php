@@ -1,9 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Faq;
 use App\Models\Slideshow;
 use App\Models\Stakeholder;
+use App\Models\PernyataanKeberatan;
 use Backpack\MenuCRUD\app\Models\MenuItem;
 use Backpack\NewsCRUD\app\Models\Tag;
 use Backpack\NewsCRUD\app\Models\Article;
@@ -13,6 +15,7 @@ use Backpack\PageManager\app\Models\Page;
 use Carbon\Carbon;
 use Google\Client;
 use Google\Service\Sheets;
+use Illuminate\Support\Facades\DB;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -22,9 +25,9 @@ use Mockery\Exception;
 
 class PageController extends Controller
 {
-   public function index()
+    public function index()
     {
-        
+
         $limit_slideshow = 3;
         $limit_news = 3;
         $limit_announcement = 3;
@@ -53,7 +56,7 @@ class PageController extends Controller
             ->limit($limit_announcement)
             ->get();
 
-        
+
         // $data_frontpages = Page::where('template', '=', 'frontpage')
         //     ->orderBy('extras', 'ASC')
         //     ->get();
@@ -89,41 +92,41 @@ class PageController extends Controller
         }
 
         // ============================================================
-    //   🔥 Tambahkan Bagian Statistik Google Sheets di sini
-    // ============================================================
+        //   🔥 Tambahkan Bagian Statistik Google Sheets di sini
+        // ============================================================
 
-    $client = new \Google\Client();
-    $client->setAuthConfig(storage_path('app/google/credentials.json'));
-    $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
+        $client = new \Google\Client();
+        $client->setAuthConfig(storage_path('app/google/credentials.json'));
+        $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
 
-    $service = new \Google\Service\Sheets($client);
+        $service = new \Google\Service\Sheets($client);
 
-    $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
-    $range = 'PermohonanInformasi!A:D';
+        $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
+        $range = 'PermohonanInformasi!A:D';
 
-    $response = $service->spreadsheets_values->get($spreadsheetId, $range);
-    $rows = $response->getValues();
+        $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+        $rows = $response->getValues();
 
-    array_shift($rows); // Hapus header
+        array_shift($rows); // Hapus header
 
-    // Kolom D = status permohonan (index 3)
-    $statusA = 'diterima';
-    $statusB = 'ditolak';
+        // Kolom D = status permohonan (index 3)
+        $statusA = 'diterima';
+        $statusB = 'ditolak';
 
-    $countA = collect($rows)->filter(function($row) use ($statusA) {
-        return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
-    })->count();
+        $countA = collect($rows)->filter(function ($row) use ($statusA) {
+            return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
+        })->count();
 
-    $countB = collect($rows)->filter(function($row) use ($statusB) {
-        return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
-    })->count();
+        $countB = collect($rows)->filter(function ($row) use ($statusB) {
+            return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
+        })->count();
 
-    $total = count($rows);
+        $total = count($rows);
 
 
-    // ============================================================
-    //      🔥 Kirim variabel statistik ke view index
-    // ============================================================
+        // ============================================================
+        //      🔥 Kirim variabel statistik ke view index
+        // ============================================================
 
 
         return view('frontpage.index')
@@ -136,9 +139,9 @@ class PageController extends Controller
             ->with('stakeholders', $stakeholders)
             ->with('news', $news)
             ->with('pengumuman', $announcement)
-             ->with('countA', $countA)
-        ->with('countB', $countB)
-        ->with('total', $total);
+            ->with('countA', $countA)
+            ->with('countB', $countB)
+            ->with('total', $total);
     }
 
     public function page($slug)
@@ -158,14 +161,14 @@ class PageController extends Controller
 
         $settings = array();
 
-         foreach ($data_settings as $index => $value) {
+        foreach ($data_settings as $index => $value) {
             $settings[$value->key] = $value;
         }
 
-        switch($page->template) {
-           
+        switch ($page->template) {
 
-            case "informasi_publik" :
+
+            case "informasi_publik":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -185,7 +188,7 @@ class PageController extends Controller
                 //     ->with('page', $page)
                 //     ->with('page_extra', $page_extra)
                 //     ->with('settings', $settings);
-             case "tentang_polije" :
+            case "tentang_polije":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -200,7 +203,7 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-             case "profil_ppid" :
+            case "profil_ppid":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -215,7 +218,7 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-            case "berkas" :
+            case "berkas":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -230,7 +233,7 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-             case "layanan_informasi" :
+            case "layanan_informasi":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -245,7 +248,7 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-             case "e_blangko_permohonan_informasi" :
+            case "e_blangko_permohonan_informasi":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -260,7 +263,35 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-            default :
+            case "e_blangko_pernyataan_keberatan":
+                $page_extra = collect();
+                if (is_array($page->extras)) {
+                    foreach ($page->extras as $index => $value) {
+                        $page_extra->put($index, $value);
+                    }
+                }
+
+                // 🔥 AMBIL ENUM DARI DATABASE
+                $enumOptions = DB::select("SHOW COLUMNS FROM pernyataan_keberatan LIKE 'alasan_keberatan'");
+                $type = $enumOptions[0]->Type; // contoh: enum('A','B','C')
+
+                preg_match_all("/'([^']+)'/", $type, $matches);
+                $alasan_keberatan = $matches[1]; // hasil: array ['A','B','C']
+
+                // Validasi view
+                $view = 'frontpage.page-templates.pernyataan_keberatan';
+
+                if (View::exists($view)) {
+                    return view($view, [
+                        'menus'            => $menus,
+                        'page'             => $page,
+                        'page_extra'       => $page_extra,
+                        'settings'         => $settings,
+                        'alasan_keberatan' => $alasan_keberatan, // ⬅️ Dikirim ke Blade!
+                    ]);
+                }
+
+            default:
                 if (View::exists('frontpage.' . 'page'))
                     return view('frontpage.' . 'page')
                         // ->with('featured_news', $featured_news)
@@ -268,8 +299,6 @@ class PageController extends Controller
                         ->with('page', $page)
                         ->with('settings', $settings);
         }
-
-
     }
 
     public function category($slug = '')
@@ -320,7 +349,7 @@ class PageController extends Controller
             ->orderBy('date', 'DESC')
             ->orderBy('id', 'DESC')
             ->paginate(4);
-             
+
 
         if ($articles->count() <= 0) {
             abort(404);
@@ -329,14 +358,14 @@ class PageController extends Controller
         // TEMPLATE A → UNTUK BERITA
         if ($slug === 'berita') {
 
-        // MEMANGGIL HELPER RELASI TAG + ARTIKEL
-         $all_tags = berita_tags();
+            // MEMANGGIL HELPER RELASI TAG + ARTIKEL
+            $all_tags = berita_tags();
 
             return view('frontpage.page-templates.berita')
-                    ->with('articles', $articles)
-                    ->with('all_tags', $all_tags)
-                    ->with('menus', $menus)
-                    ->with('settings', $settings);
+                ->with('articles', $articles)
+                ->with('all_tags', $all_tags)
+                ->with('menus', $menus)
+                ->with('settings', $settings);
         }
 
         // TEMPLATE B → UNTUK PENGUMUMAN
@@ -345,15 +374,14 @@ class PageController extends Controller
             $all_tags = pengumuman_tags();
 
             return view('frontpage.page-templates.pengumuman')
-                    ->with('articles', $articles)
-                    ->with('all_tags', $all_tags)
-                    ->with('menus', $menus)
-                    ->with('settings', $settings);
+                ->with('articles', $articles)
+                ->with('all_tags', $all_tags)
+                ->with('menus', $menus)
+                ->with('settings', $settings);
         }
 
         // fallback (seharusnya tidak pernah ke sini)
         abort(404);
-
     }
 
     public function news_detail($category, $slug)
@@ -367,7 +395,7 @@ class PageController extends Controller
             $menus = $this->create_tree();
             $data_settings = Setting::all();
 
-            
+
             $tag = Article::with(['tags'])
                 ->where('slug', '=', $slug)
                 ->firstOrFail();
@@ -381,12 +409,12 @@ class PageController extends Controller
             // Pilih view berdasarkan kategori
             if ($category === 'berita') {
                 $news = Article::with(['category'])
-                ->where('slug', '!=', $slug)
-                ->where('category_id', '=', 5)
-                ->orderBy('date', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->limit(5)
-                ->get();
+                    ->where('slug', '!=', $slug)
+                    ->where('category_id', '=', 5)
+                    ->orderBy('date', 'DESC')
+                    ->orderBy('id', 'DESC')
+                    ->limit(5)
+                    ->get();
 
                 $all_tags = berita_tags();
 
@@ -401,17 +429,17 @@ class PageController extends Controller
             }
 
             if ($category === 'pengumuman') {
-                 $news = Article::with(['category'])
-                ->where('slug', '!=', $slug)
-                ->where('category_id', '=', 6)
-                ->orderBy('date', 'DESC')
-                ->orderBy('id', 'DESC')
-                ->limit(5)
-                ->get();
+                $news = Article::with(['category'])
+                    ->where('slug', '!=', $slug)
+                    ->where('category_id', '=', 6)
+                    ->orderBy('date', 'DESC')
+                    ->orderBy('id', 'DESC')
+                    ->limit(5)
+                    ->get();
 
-                 $all_tags = pengumuman_tags();
+                $all_tags = pengumuman_tags();
 
-                 return view('frontpage.page-templates.detail_pengumuman')
+                return view('frontpage.page-templates.detail_pengumuman')
                     ->with('categories', $categories)
                     ->with('news', $news)
                     ->with('all_tags', $all_tags)
@@ -419,93 +447,92 @@ class PageController extends Controller
                     ->with('article', $article)
                     ->with('settings', $settings)
                     ->with('menus', $menus);
-                
             }
-
         } else {
             abort(404);
         }
     }
 
-public function tag($slug)
-{
-    // LOAD SETTINGS
-    $data_settings = Setting::all();
-    $settings = [];
+    public function tag($slug)
+    {
+        // LOAD SETTINGS
+        $data_settings = Setting::all();
+        $settings = [];
 
-    foreach ($data_settings as $value) {
-        $settings[$value->key] = $value;
-    }
+        foreach ($data_settings as $value) {
+            $settings[$value->key] = $value;
+        }
 
-    // MENUS
-    $menus = $this->create_tree();
+        // MENUS
+        $menus = $this->create_tree();
 
-    // AMBIL TAG
-    $tag = Tag::where('slug', $slug)->firstOrFail();
+        // AMBIL TAG
+        $tag = Tag::where('slug', $slug)->firstOrFail();
 
-    // ARTIKEL BERDASARKAN TAG INI
-    $articles = Article::whereHas('tags', function ($q) use ($tag) {
+        // ARTIKEL BERDASARKAN TAG INI
+        $articles = Article::whereHas('tags', function ($q) use ($tag) {
             $q->where('tags.id', $tag->id);
         })
-        ->where('category_id', '=', 5)
-        ->where('status', 'PUBLISHED')
-        ->orderBy('date', 'DESC')
-        ->orderBy('id', 'DESC')
-        ->paginate(6);
+            ->where('category_id', '=', 5)
+            ->where('status', 'PUBLISHED')
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->paginate(6);
 
-    // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
-    $all_tags = berita_tags();
+        // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
+        $all_tags = berita_tags();
 
-    return view('frontpage.page-templates.tag')
-        ->with('articles', $articles)
-        ->with('tag', $tag)
-        ->with('all_tags', $all_tags)
-        ->with('menus', $menus)
-        ->with('settings', $settings);
-}
-
-public function tag_announce($slug)
-{
-    // LOAD SETTINGS
-    $data_settings = Setting::all();
-    $settings = [];
-
-    foreach ($data_settings as $value) {
-        $settings[$value->key] = $value;
+        return view('frontpage.page-templates.tag')
+            ->with('articles', $articles)
+            ->with('tag', $tag)
+            ->with('all_tags', $all_tags)
+            ->with('menus', $menus)
+            ->with('settings', $settings);
     }
 
-    // MENUS
-    $menus = $this->create_tree();
+    public function tag_announce($slug)
+    {
+        // LOAD SETTINGS
+        $data_settings = Setting::all();
+        $settings = [];
 
-    // AMBIL TAG
-    $tag = Tag::where('slug', $slug)->firstOrFail();
+        foreach ($data_settings as $value) {
+            $settings[$value->key] = $value;
+        }
 
-    // ARTIKEL BERDASARKAN TAG INI
-    $articles = Article::whereHas('tags', function ($q) use ($tag) {
+        // MENUS
+        $menus = $this->create_tree();
+
+        // AMBIL TAG
+        $tag = Tag::where('slug', $slug)->firstOrFail();
+
+        // ARTIKEL BERDASARKAN TAG INI
+        $articles = Article::whereHas('tags', function ($q) use ($tag) {
             $q->where('tags.id', $tag->id);
         })
-        ->where('category_id', '=', 6)
-        ->where('status', 'PUBLISHED')
-        ->orderBy('date', 'DESC')
-        ->orderBy('id', 'DESC')
-        ->paginate(6);
+            ->where('category_id', '=', 6)
+            ->where('status', 'PUBLISHED')
+            ->orderBy('date', 'DESC')
+            ->orderBy('id', 'DESC')
+            ->paginate(6);
 
-    // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
-    $all_tags = pengumuman_tags();
+        // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
+        $all_tags = pengumuman_tags();
 
-    return view('frontpage.page-templates.tag_pengumuman')
-        ->with('articles', $articles)
-        ->with('tag', $tag)
-        ->with('all_tags', $all_tags)
-        ->with('menus', $menus)
-        ->with('settings', $settings);
-}
+        return view('frontpage.page-templates.tag_pengumuman')
+            ->with('articles', $articles)
+            ->with('tag', $tag)
+            ->with('all_tags', $all_tags)
+            ->with('menus', $menus)
+            ->with('settings', $settings);
+    }
 
-    public function search_news(Request $request) {
-        $article = Article::where(function($query) use ($request) {
+    public function search_news(Request $request)
+    {
+        $article = Article::where(function ($query) use ($request) {
             $query->where('title', 'like', '%' . $request->get('q') . '%');
         })->where('status', 'PUBLISHED')
-         ->where('category_id', '=', 5)
+            ->where('category_id', '=', 5)
             ->paginate(10);
 
         $menus = $this->create_tree();
@@ -526,11 +553,12 @@ public function tag_announce($slug)
         }
     }
 
-     public function search_announce(Request $request) {
-        $article = Article::where(function($query) use ($request) {
+    public function search_announce(Request $request)
+    {
+        $article = Article::where(function ($query) use ($request) {
             $query->where('title', 'like', '%' . $request->get('p') . '%');
         })->where('status', 'PUBLISHED')
-         ->where('category_id', '=', 6)
+            ->where('category_id', '=', 6)
             ->paginate(10);
 
         $menus = $this->create_tree();
@@ -579,12 +607,11 @@ public function tag_announce($slug)
             $settings[$value->key] = $value;
         }
 
-         if (View::exists('frontpage.' . 'kirim_komentar')) {
+        if (View::exists('frontpage.' . 'kirim_komentar')) {
             return view('frontpage.' . 'kirim_komentar')
                 ->with('menus', $menus)
                 ->with('settings', $settings);
         } else return Redirect::route('beranda');
-
     }
 
     public function tree_element($entry, $key, $all_entries, $crud, $html)
@@ -718,50 +745,50 @@ public function tag_announce($slug)
     }
 
 
-   public function countTwoStatus()
-{
-    // --- Google Sheets API ---
-    $client = new \Google\Client();
-    $client->setAuthConfig(storage_path('app/google/credentials.json'));
-    $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
+    public function countTwoStatus()
+    {
+        // --- Google Sheets API ---
+        $client = new \Google\Client();
+        $client->setAuthConfig(storage_path('app/google/credentials.json'));
+        $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
 
-    $service = new \Google\Service\Sheets($client);
+        $service = new \Google\Service\Sheets($client);
 
-    $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
-    $range = 'PermohonanInformasi!A:D'; // Kolom hanya sampai D
+        $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
+        $range = 'PermohonanInformasi!A:D'; // Kolom hanya sampai D
 
-    $response = $service->spreadsheets_values->get($spreadsheetId, $range);
-    $rows = $response->getValues();
+        $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+        $rows = $response->getValues();
 
-    // Hapus header
-    array_shift($rows);
+        // Hapus header
+        array_shift($rows);
 
-    // --- Status yang ingin dihitung ---
-    $statusA = 'diterima';
-    $statusB = 'ditolak';
+        // --- Status yang ingin dihitung ---
+        $statusA = 'diterima';
+        $statusB = 'ditolak';
 
-    // --- Hitung kondisi pertama ---
-    $countA = collect($rows)->filter(function ($row) use ($statusA) {
-        return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
-    })->count();  // Kolom D = index 3
+        // --- Hitung kondisi pertama ---
+        $countA = collect($rows)->filter(function ($row) use ($statusA) {
+            return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
+        })->count();  // Kolom D = index 3
 
-    // --- Hitung kondisi kedua ---
-    $countB = collect($rows)->filter(function ($row) use ($statusB) {
-        return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
-    })->count();
+        // --- Hitung kondisi kedua ---
+        $countB = collect($rows)->filter(function ($row) use ($statusB) {
+            return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
+        })->count();
 
-    // --- Hitung total (semua data) ---
-    $total = count($rows);
+        // --- Hitung total (semua data) ---
+        $total = count($rows);
 
-    return view('frontpage.sections.statistik', compact('countA', 'countB', 'total'));
-}
-
-
+        return view('frontpage.sections.statistik', compact('countA', 'countB', 'total'));
+    }
 
 
-    
 
-     public function clear_cache()
+
+
+
+    public function clear_cache()
     {
         Artisan::call('cache:clear');
     }

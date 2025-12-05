@@ -423,6 +423,12 @@ trait PageTemplates
        
     }
 
+    private function e_blangko_pernyataan_keberatan()
+    {
+       
+    }
+
+
        private function umum()
     {
          $this->crud->addField([

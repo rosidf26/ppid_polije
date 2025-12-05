@@ -17,57 +17,61 @@ use App\Http\Controllers\Admin\BackpackGoogleController;
 // });
 
 
-    Route::get('/', 'PageController@index')
-        ->name('beranda');
+Route::get('/', 'PageController@index')
+    ->name('beranda');
 
-    Route::post('/contact-response', 'PageController@contact_response')
-        ->name('contact_us_response');
+Route::post('/contact-response', 'PageController@contact_response')
+    ->name('contact_us_response');
 
-    Route::get('/faq', 'PageController@faq')
-        ->name('faq');
+Route::get('/faq', 'PageController@faq')
+    ->name('faq');
 
-     Route::get('/komentar', 'PageController@komentar')
-        ->name('komentar');
+Route::get('/komentar', 'PageController@komentar')
+    ->name('komentar');
 
-    Route::get('/cari-berita', 'PageController@search_news')
-        ->name('search_news');
+Route::get('/cari-berita', 'PageController@search_news')
+    ->name('search_news');
 
-    Route::get('/cari-pengumuman', 'PageController@search_announce')
-        ->name('search_announce');
+Route::get('/cari-pengumuman', 'PageController@search_announce')
+    ->name('search_announce');
 
-    Route::get('/clear-cache', 'PageController@clear_cache')
-        ->name('clear_cache');
+Route::get('/clear-cache', 'PageController@clear_cache')
+    ->name('clear_cache');
 
-    Route::get('/kategori/{category?}', 'PageController@category')
-        ->where(['category' => '[a-zA-Z0-9\-]+'])
-        ->name('category_publikasi');
+Route::get('/kategori/{category?}', 'PageController@category')
+    ->where(['category' => '[a-zA-Z0-9\-]+'])
+    ->name('category_publikasi');
 
-    Route::get('/{page_slug}', 'PageController@page')
-        ->where(['page_slug' => '[a-zA-Z0-9\-]+'])
-        ->name('news-page_slug');
+Route::get('/{page_slug}', 'PageController@page')
+    ->where(['page_slug' => '[a-zA-Z0-9\-]+'])
+    ->name('news-page_slug');
 
-    Route::get('/{category}/{article_slug}', 'PageController@news_detail')
-        ->where(['category' => '[a-zA-Z0-9\-]+', 'article_slug' => '[a-zA-Z0-9\-]+'])
-        ->name('news-detail');
+Route::get('/{category}/{article_slug}', 'PageController@news_detail')
+    ->where(['category' => '[a-zA-Z0-9\-]+', 'article_slug' => '[a-zA-Z0-9\-]+'])
+    ->name('news-detail');
 
-    Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
-        ->name('core.elfinder.connector');
-    
-    Route::post('/kirim_komentar', 'KomentarController@store')->name('komentar.store');
+Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
+    ->name('core.elfinder.connector');
 
-    Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
+Route::post('/kirim_komentar', 'KomentarController@store')->name('komentar.store');
 
-    Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
+Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
 
-    Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
+Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
 
-  Route::group([
-  'prefix' => 'admin',
-  'middleware' => ['web'],
-], function() {
+Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
+
+Route::group([
+    'prefix' => 'admin',
+    'middleware' => ['web'],
+], function () {
     Route::get('login/google', [BackpackGoogleController::class, 'redirectToGoogle'])
-       ->name('backpack.auth.google.redirect');
+        ->name('backpack.auth.google.redirect');
 
     Route::get('login/google/callback', [BackpackGoogleController::class, 'handleGoogleCallback'])
-       ->name('backpack.auth.google.callback');
+        ->name('backpack.auth.google.callback');
 });
+
+Route::post('/kirim-permohonan-informasi', 'BlangkoController@permohonanSubmit')->name('permohonan.store');
+
+Route::post('/kirim-pernyataan-keberatan', 'BlangkoController@keberatanSubmit')->name('keberatan.store');
