@@ -5,34 +5,36 @@
     </h2>
 
     <div class="row pb-5 news-container">
-    <!-- Berita 1 -->
-     @foreach($news as $index => $value)
-    <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex">
-        <div class="thumb-info thumb-info-hide-wrapper-bg flex-fill d-flex flex-column">
-            <div class="thumb-info-wrapper">
-                <a href="about-me.html">
-                    <img src="{{ ($value->image) ? url($value->image) : url('frontpage/img/team/team-1.jpg') }}" alt="" class="news-image">
-                    <span class="thumb-info-title">
-                        <span class="thumb-info-inner">{{ $value->title }}</span>
-                        <span class="thumb-info-type">{{ strftime("%e %B %Y", strtotime($value->date)) }}</span>
-                    </span>
-                </a>
-            </div>
-            <div class="thumb-info-caption mt-auto">
-                <div class="thumb-info-caption-text">
-                    {{ substr(strip_tags($value->content), 0, 150) }}
+        <!-- Berita 1 -->
+        @foreach($news as $index => $value)
+        <div class="col-12 col-md-6 col-lg-4 mb-4 d-flex">
+            <div class="thumb-info thumb-info-hide-wrapper-bg flex-fill d-flex flex-column">
+                <div class="thumb-info-wrapper">
+                    <a href="{{ $value->category->slug . '/' . $value->slug }}">
+                        <img src="{{ ($value->image) ? url($value->image) : url('frontpage/img/team/team-1.jpg') }}"
+                            alt="" class="news-image">
+                        <span class="thumb-info-title">
+                            <span class="thumb-info-inner">{{ $value->title }}</span>
+                            <span class="thumb-info-type">{{ strftime("%e %B %Y", strtotime($value->date)) }}</span>
+                        </span>
+                    </a>
                 </div>
-                <a class="btn btn-primary btn-md mt-2" href="{{ $value->category->slug . '/' . $value->slug }}">Baca Selengkapnya</a>
+                <div class="thumb-info-caption mt-auto">
+                    <div class="thumb-info-caption-text">
+                        {{ substr(strip_tags($value->content), 0, 150) }}
+                    </div>
+                    <a class="btn btn-primary btn-md mt-2" href="{{ $value->category->slug . '/' . $value->slug }}">Baca
+                        Selengkapnya</a>
+                </div>
             </div>
         </div>
+        @endforeach
+        <!-- Berita 2 -->
+
+
+        <!-- Berita 3 -->
+
     </div>
-@endforeach
-    <!-- Berita 2 -->
-
-
-    <!-- Berita 3 -->
-    
-</div>
 
     <!-- Section Pengumuman -->
     <h2 class="font-weight-normal text-6 mb-4 text-center">
@@ -40,42 +42,47 @@
     </h2>
 
     <div class="row">
-  <div class="col pb-4">
+        <div class="col pb-4">
 
-    <div class="recent-posts-vertical mt-3">
+            <div class="recent-posts-vertical mt-3">
 
-      <!-- Post 1 -->
-       @foreach($pengumuman as $index => $value)
-      <article class="post d-flex align-items-start p-3 border rounded shadow-sm mb-3 bg-white">
-        <div class="post-date text-center bg-primary text-white rounded flex-shrink-0 me-3 p-2 custom-date">
-          <span class="day d-block fw-bold fs-4">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('d') }}</span>
-          <span class="month text-uppercase small">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('M') }}</span>
-          <span class="year small opacity-75">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('Y') }}</span>
+                <!-- Post 1 -->
+                @foreach($pengumuman as $index => $value)
+                <article class="post d-flex align-items-start p-3 border rounded shadow-sm mb-3 bg-white">
+                    <div class="post-date text-center bg-primary text-white rounded flex-shrink-0 me-3 p-2 custom-date">
+                        <span
+                            class="day d-block fw-bold fs-4">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('d') }}</span>
+                        <span
+                            class="month text-uppercase small">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('M') }}</span>
+                        <span
+                            class="year small opacity-75">{{ \Carbon\Carbon::parse($value->date)->translatedFormat('Y') }}</span>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h4 class="fw-semibold mb-2">
+                            <a href="{{ $value->category->slug . '/' . $value->slug }}"
+                                class="text-decoration-none text-dark">
+                                {{ $value->title }}
+                            </a>
+                        </h4>
+                        <p class="mb-3 text-muted">
+                            {{ substr(strip_tags($value->content), 0, 150) }}
+                        </p>
+                        <a href="{{ $value->category->slug . '/' . $value->slug }}"
+                            class="btn btn-light text-uppercase text-primary text-1 py-2 px-3 mt-1">
+                            <strong>Baca Selengkapnya</strong>
+                        </a>
+                    </div>
+                </article>
+                @endforeach
+
+                <!-- Post 2 -->
+
+                <!-- Post 3 -->
+
+            </div>
+
         </div>
-        <div class="flex-grow-1">
-          <h4 class="fw-semibold mb-2">
-            <a href="{{ $value->category->slug . '/' . $value->slug }}" class="text-decoration-none text-dark">
-              {{ $value->title }}
-            </a>
-          </h4>
-          <p class="mb-3 text-muted">
-            {{ substr(strip_tags($value->content), 0, 150) }}
-          </p>
-          <a href="{{ $value->category->slug . '/' . $value->slug }}" class="btn btn-light text-uppercase text-primary text-1 py-2 px-3 mt-1">
-            <strong>Baca Selengkapnya</strong>
-          </a>
-        </div>
-      </article>
-      @endforeach
-
-      <!-- Post 2 -->
-
-      <!-- Post 3 -->
-
     </div>
-
-  </div>
-</div>
 
 
 

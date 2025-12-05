@@ -153,6 +153,7 @@
                                                 <span class="help-block text-primary">
                                                     (Scan atau foto KTP/SIM/Paspor pemohon)
                                                 </span>
+                                                <br>
                                                 @error('ktp_pemohon')
                                                 <h6 class="text-danger mt-2 mb-0">{{ $message }}</h6>
                                                 @enderror
@@ -485,7 +486,7 @@
                                     <div id="form_buttons" class="form-group row" style="display:none;">
                                         <label class="col-lg-3 control-label text-lg-right pt-2"></label>
                                         <div class="col-lg-6 d-flex justify-content-between">
-                                            <button type="submit" class="btn btn-primary">Kirim</button>
+                                            <button type="submit" class="btn btn-success">Kirim</button>
 
                                             <button type="button" class="btn btn-dark" data-toggle="modal"
                                                 data-target="#resetModal">
@@ -511,109 +512,109 @@
     @include('frontpage.templates.footer')
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function() {
 
-            const formA = document.getElementById('form_perseorangan');
-            const formB = document.getElementById('form_lembaga');
-            const kategoriRadios = document.querySelectorAll('input[name="kategori"]');
-            const sumberInfoRadios = document.querySelectorAll('input[name="sumber_info"]');
-            const confirmResetBtn = document.getElementById('confirmReset');
-            const formButtons = document.getElementById('form_buttons');
-            const formInfo = document.getElementById('form_info');
+        const formA = document.getElementById('form_perseorangan');
+        const formB = document.getElementById('form_lembaga');
+        const kategoriRadios = document.querySelectorAll('input[name="kategori"]');
+        const sumberInfoRadios = document.querySelectorAll('input[name="sumber_info"]');
+        const confirmResetBtn = document.getElementById('confirmReset');
+        const formButtons = document.getElementById('form_buttons');
+        const formInfo = document.getElementById('form_info');
 
-            function disableLembagaFields(disabled) {
-                document.querySelectorAll('#form_lembaga input, #form_lembaga textarea, #form_lembaga select')
-                    .forEach(el => {
-                        el.disabled = disabled;
-                    });
-            }
-
-            function disablePeroranganFields(disabled) {
-                document.querySelectorAll(
-                        '#form_perseorangan input, #form_perseorangan textarea, #form_perseorangan select')
-                    .forEach(el => {
-                        el.disabled = disabled;
-                    });
-            }
-
-            // Toggle form ketika klik kategori
-            kategoriRadios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    if (this.value === 'perseorangan') {
-                        formA.style.display = 'block';
-                        formB.style.display = 'none';
-                        formButtons.style.display = 'flex';
-                        formInfo.style.display = 'block';
-                        disableLembagaFields(true);
-                        disablePeroranganFields(false);
-                    }
-
-                    if (this.value === 'lembaga') {
-                        formA.style.display = 'none';
-                        formB.style.display = 'block';
-                        formButtons.style.display = 'flex';
-                        formInfo.style.display = 'block';
-                        disableLembagaFields(false);
-                        disablePeroranganFields(true);
-                    }
+        function disableLembagaFields(disabled) {
+            document.querySelectorAll('#form_lembaga input, #form_lembaga textarea, #form_lembaga select')
+                .forEach(el => {
+                    el.disabled = disabled;
                 });
+        }
+
+        function disablePeroranganFields(disabled) {
+            document.querySelectorAll(
+                    '#form_perseorangan input, #form_perseorangan textarea, #form_perseorangan select')
+                .forEach(el => {
+                    el.disabled = disabled;
+                });
+        }
+
+        // Toggle form ketika klik kategori
+        kategoriRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'perseorangan') {
+                    formA.style.display = 'block';
+                    formB.style.display = 'none';
+                    formButtons.style.display = 'flex';
+                    formInfo.style.display = 'block';
+                    disableLembagaFields(true);
+                    disablePeroranganFields(false);
+                }
+
+                if (this.value === 'lembaga') {
+                    formA.style.display = 'none';
+                    formB.style.display = 'block';
+                    formButtons.style.display = 'flex';
+                    formInfo.style.display = 'block';
+                    disableLembagaFields(false);
+                    disablePeroranganFields(true);
+                }
             });
-
-            // Auto-show berdasarkan old()
-            const oldKategori = "{{ old('kategori') }}";
-
-            if (oldKategori === 'perseorangan') {
-                document.querySelector('input[name="kategori"][value="perseorangan"]').checked = true;
-                formA.style.display = 'block';
-                formButtons.style.display = 'flex';
-                formInfo.style.display = 'block';
-                disableLembagaFields(true);
-                disablePeroranganFields(false);
-            }
-
-            if (oldKategori === 'lembaga') {
-                document.querySelector('input[name="kategori"][value="lembaga"]').checked = true;
-                formB.style.display = 'block';
-                formButtons.style.display = 'flex';
-                formInfo.style.display = 'block';
-                disableLembagaFields(false);
-                disablePeroranganFields(true);
-
-            }
-
-            // RESET FORM PADA KONFIRMASI
-            confirmResetBtn.addEventListener('click', function() {
-
-                // 1. Reset semua input text/email/textarea
-                document.querySelectorAll('input[type="text"], input[type="email"], textarea')
-                    .forEach(el => el.value = '');
-
-                // 2. Reset file input
-                document.querySelectorAll('input[type="file"]').forEach(el => el.value = '');
-
-                // 3. Uncheck radio kategori
-                kategoriRadios.forEach(r => r.checked = false);
-
-                // 4. Uncheck Sumber Informasi
-                sumberInfoRadios.forEach(r => r.checked = false);
-
-                // 5. Hapus error message Laravel (Blade-generated)
-                document.querySelectorAll('.text-danger').forEach(el => el.remove());
-
-                // 6. Sembunyikan form kategori
-                formA.style.display = 'none';
-                formB.style.display = 'none';
-
-                document.getElementById('form_buttons').style.display = 'none';
-                document.getElementById('form_info').style.display = 'none';
-
-                document.querySelectorAll('small.text-secondary').forEach(el => el.remove());
-
-                // 7. Tutup modal Bootstrap
-                $('#resetModal').modal('hide');
-            });
-
         });
+
+        // Auto-show berdasarkan old()
+        const oldKategori = "{{ old('kategori') }}";
+
+        if (oldKategori === 'perseorangan') {
+            document.querySelector('input[name="kategori"][value="perseorangan"]').checked = true;
+            formA.style.display = 'block';
+            formButtons.style.display = 'flex';
+            formInfo.style.display = 'block';
+            disableLembagaFields(true);
+            disablePeroranganFields(false);
+        }
+
+        if (oldKategori === 'lembaga') {
+            document.querySelector('input[name="kategori"][value="lembaga"]').checked = true;
+            formB.style.display = 'block';
+            formButtons.style.display = 'flex';
+            formInfo.style.display = 'block';
+            disableLembagaFields(false);
+            disablePeroranganFields(true);
+
+        }
+
+        // RESET FORM PADA KONFIRMASI
+        confirmResetBtn.addEventListener('click', function() {
+
+            // 1. Reset semua input text/email/textarea
+            document.querySelectorAll('input[type="text"], input[type="email"], textarea')
+                .forEach(el => el.value = '');
+
+            // 2. Reset file input
+            document.querySelectorAll('input[type="file"]').forEach(el => el.value = '');
+
+            // 3. Uncheck radio kategori
+            kategoriRadios.forEach(r => r.checked = false);
+
+            // 4. Uncheck Sumber Informasi
+            sumberInfoRadios.forEach(r => r.checked = false);
+
+            // 5. Hapus error message Laravel (Blade-generated)
+            document.querySelectorAll('.text-danger').forEach(el => el.remove());
+
+            // 6. Sembunyikan form kategori
+            formA.style.display = 'none';
+            formB.style.display = 'none';
+
+            document.getElementById('form_buttons').style.display = 'none';
+            document.getElementById('form_info').style.display = 'none';
+
+            document.querySelectorAll('small.text-secondary').forEach(el => el.remove());
+
+            // 7. Tutup modal Bootstrap
+            $('#resetModal').modal('hide');
+        });
+
+    });
     </script>
 
 

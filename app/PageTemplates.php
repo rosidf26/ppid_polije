@@ -19,8 +19,8 @@ trait PageTemplates
     | - page title
     | - page slug
     */
-    
-     private function informasi_publik()
+
+    private function informasi_publik()
     {
         $this->crud->addField([
             'name' => 'featured_content',
@@ -51,21 +51,21 @@ trait PageTemplates
 
         $this->crud->addField([
             // Table
-        'name'            => 'options',
-        'label'           => 'Buat Tabel',
-        'type'            => 'table',
-        'entity_singular' => 'option', // used on the "Add X" button
-        'columns'         => [
+            'name'            => 'options',
+            'label'           => 'Buat Tabel',
+            'type'            => 'table',
+            'entity_singular' => 'option', // used on the "Add X" button
+            'columns'         => [
                 'no'  => 'No',
                 'desc'  => 'Keterangan',
                 'link' => 'Link'
-        ],
-        'max' => 10, // maximum rows allowed in the table
-        'min' => 0, // minimum rows allowed in the table
+            ],
+            'max' => 10, // maximum rows allowed in the table
+            'min' => 0, // minimum rows allowed in the table
 
-        // 🔥 penting agar tersimpan di kolom JSON "extras"
-        'fake' => true,
-        'store_in' => 'extras',
+            // 🔥 penting agar tersimpan di kolom JSON "extras"
+            'fake' => true,
+            'store_in' => 'extras',
         ]);
 
         $this->crud->addField([
@@ -85,8 +85,8 @@ trait PageTemplates
 
     private function tentang_polije()
     {
-       
-       $this->crud->addField([
+
+        $this->crud->addField([
             'name' => 'fi_1',
             'fake' => true,
             'store_in' => 'extras',
@@ -142,9 +142,9 @@ trait PageTemplates
         ]);
     }
 
-     private function profil_ppid()
+    private function profil_ppid()
     {
-       
+
         $this->crud->addField([
             'name' => 'featured_image',
             'label' => 'Featured Image',
@@ -156,22 +156,22 @@ trait PageTemplates
 
         $this->crud->addField([
             // Table
-        'name'            => 'options',
-        'label'           => 'Buat Tabel',
-        'type'            => 'table',
-        'entity_singular' => 'option', // used on the "Add X" button
-        'columns'         => [
+            'name'            => 'options',
+            'label'           => 'Buat Tabel',
+            'type'            => 'table',
+            'entity_singular' => 'option', // used on the "Add X" button
+            'columns'         => [
                 'no'  => 'No',
                 'name'  => 'Nama',
                 'pangkat' => 'Pangkat/Jabatan',
                 'status' => 'Diangkat Dalam Jabatan'
-        ],
-        'max' => 10, // maximum rows allowed in the table
-        'min' => 0, // minimum rows allowed in the table
+            ],
+            'max' => 10, // maximum rows allowed in the table
+            'min' => 0, // minimum rows allowed in the table
 
-        // 🔥 penting agar tersimpan di kolom JSON "extras"
-        'fake' => true,
-        'store_in' => 'extras',
+            // 🔥 penting agar tersimpan di kolom JSON "extras"
+            'fake' => true,
+            'store_in' => 'extras',
         ]);
 
         $this->crud->addField([
@@ -187,13 +187,11 @@ trait PageTemplates
                 'allowedContent' => true
             ]
         ]);
-
-        
     }
 
-      private function berkas()
+    private function berkas()
     {
-       $this->crud->addField([
+        $this->crud->addField([
             'name' => 'label_1',
             'fake' => true,
             'store_in' => 'extras',
@@ -206,7 +204,7 @@ trait PageTemplates
 
         $this->crud->addField([
             'name' => 'berkas_1',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas 1',
             'type' => 'browse',
@@ -228,7 +226,7 @@ trait PageTemplates
 
         $this->crud->addField([
             'name' => 'berkas_2',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas 2',
             'type' => 'browse',
@@ -250,7 +248,7 @@ trait PageTemplates
 
         $this->crud->addField([
             'name' => 'berkas_3',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas 3',
             'type' => 'browse',
@@ -272,7 +270,7 @@ trait PageTemplates
 
         $this->crud->addField([
             'name' => 'berkas_4',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas 4',
             'type' => 'browse',
@@ -294,7 +292,7 @@ trait PageTemplates
 
         $this->crud->addField([
             'name' => 'berkas_5',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas 5',
             'type' => 'browse',
@@ -310,34 +308,32 @@ trait PageTemplates
             'placeholder' => trans('backpack::pagemanager.content_placeholder'),
             'extra_plugins' => ['autogrow'],
             'options' => [
-               'autoGrow_minHeight'   => 200,
-               'removePlugins'        => 'resize,maximize',
-               'format_tags' => 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
-               'allowedContent' => true
+                'autoGrow_minHeight'   => 200,
+                'removePlugins'        => 'resize,maximize',
+                'format_tags' => 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
+                'allowedContent' => true
             ]
         ]);
-
-       
     }
 
-      private function layanan_informasi()
+    private function layanan_informasi()
     {
 
-         $this->crud->addField([
+        $this->crud->addField([
             'name' => 'featured_image',
             'label' => 'Featured Image',
             'type' => 'browse',
             'fake' => true,
             'placeholder' => 'Featured Image',
             'store_in' => 'extras',
-             'wrapperAttributes' => [
+            'wrapperAttributes' => [
                 'class' => 'form-group col-md-6'
             ],
         ]);
 
         $this->crud->addField([
             'name' => 'berkas',
-             'fake' => true,
+            'fake' => true,
             'store_in' => 'extras',
             'label' => 'Berkas',
             'type' => 'browse',
@@ -345,7 +341,6 @@ trait PageTemplates
                 'class' => 'form-group col-md-6'
             ],
         ]);
-       
     }
 
     private function statistik()
@@ -415,35 +410,25 @@ trait PageTemplates
                 'class' => 'form-group col-md-6'
             ]
         ]);
-
     }
 
-    private function e_blangko_permohonan_informasi()
-    {
-       
-    }
-
-    private function e_blangko_pernyataan_keberatan()
-    {
-       
-    }
+    private function e_blangko() {}
 
 
-       private function umum()
+    private function umum()
     {
-         $this->crud->addField([
+        $this->crud->addField([
             'name' => 'content',
             'label' => trans('backpack::pagemanager.content'),
             'type' => 'ckeditor',
             'placeholder' => trans('backpack::pagemanager.content_placeholder'),
             'extra_plugins' => ['autogrow'],
             'options' => [
-               'autoGrow_minHeight'   => 200,
-               'removePlugins'        => 'resize,maximize',
-               'format_tags' => 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
-               'allowedContent' => true
+                'autoGrow_minHeight'   => 200,
+                'removePlugins'        => 'resize,maximize',
+                'format_tags' => 'p;h1;h2;h3;h4;h5;h6;pre;address;div',
+                'allowedContent' => true
             ]
         ]);
     }
-   
 }

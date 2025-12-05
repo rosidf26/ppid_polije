@@ -248,7 +248,8 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-            case "e_blangko_permohonan_informasi":
+            case "e_blangko":
+
                 $page_extra = collect();
                 if (is_array($page->extras)) {
                     foreach ($page->extras as $index => $value) {
@@ -256,30 +257,24 @@ class PageController extends Controller
                     }
                 }
 
-                if (View::exists('frontpage.page-templates.' . 'permohonan_informasi'))
-                    return view('frontpage.page-templates.' . 'permohonan_informasi')
-                        ->with('menus', $menus)
-                        ->with('page', $page)
-                        ->with('page_extra', $page_extra)
-                        ->with('settings', $settings);
+                // Tentukan view berdasarkan slug
+                $slug = $page->slug;
 
-            case "e_blangko_pernyataan_keberatan":
-                $page_extra = collect();
-                if (is_array($page->extras)) {
-                    foreach ($page->extras as $index => $value) {
-                        $page_extra->put($index, $value);
-                    }
+                if ($slug === "e-blangko-permohonan-informasi") {
+                    $view = "frontpage.page-templates.permohonan_informasi";
+                } elseif ($slug === "e-blangko-pernyataan-keberatan") {
+
+                    // --- AMBIL ENUM DARI DATABASE (jika diperlukan khusus slug ini)
+                    $enumOptions = DB::select("SHOW COLUMNS FROM pernyataan_keberatan LIKE 'alasan_keberatan'");
+                    $type = $enumOptions[0]->Type;
+                    preg_match_all("/'([^']+)'/", $type, $matches);
+                    $alasan_keberatan = $matches[1];
+
+                    $view = "frontpage.page-templates.pernyataan_keberatan";
+                } else {
+                    // default jika slug tidak dikenali
+                    $view = "frontpage.page-templates.e_blangko";
                 }
-
-                // 🔥 AMBIL ENUM DARI DATABASE
-                $enumOptions = DB::select("SHOW COLUMNS FROM pernyataan_keberatan LIKE 'alasan_keberatan'");
-                $type = $enumOptions[0]->Type; // contoh: enum('A','B','C')
-
-                preg_match_all("/'([^']+)'/", $type, $matches);
-                $alasan_keberatan = $matches[1]; // hasil: array ['A','B','C']
-
-                // Validasi view
-                $view = 'frontpage.page-templates.pernyataan_keberatan';
 
                 if (View::exists($view)) {
                     return view($view, [
@@ -287,7 +282,7 @@ class PageController extends Controller
                         'page'             => $page,
                         'page_extra'       => $page_extra,
                         'settings'         => $settings,
-                        'alasan_keberatan' => $alasan_keberatan, // ⬅️ Dikirim ke Blade!
+                        'alasan_keberatan' => $alasan_keberatan ?? null,
                     ]);
                 }
 
