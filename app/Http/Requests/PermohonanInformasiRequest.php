@@ -8,7 +8,7 @@ class PermohonanInformasiRequest extends FormRequest
 {
     public function authorize()
     {
-        return true;
+        return backpack_auth()->check();
     }
 
     public function rules()

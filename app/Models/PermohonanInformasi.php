@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use \Backpack\CRUD\app\Models\Traits\CrudTrait;
 
 class PermohonanInformasi extends Model
 {
+    use CrudTrait;
     protected $table = 'permohonan_informasi';
 
     protected $fillable = [
@@ -41,4 +43,37 @@ class PermohonanInformasi extends Model
         'sumber_info',
         'alamat_info',
     ];
+
+    public function getNamaDisplayAttribute()
+    {
+        return $this->kategori === 'lembaga'
+            ? $this->nama_organisasi
+            : $this->nama_pemohon;
+    }
+
+    public function getHpDisplayAttribute()
+    {
+        return $this->kategori === 'lembaga'
+            ? $this->telp_organisasi
+            : $this->hp_pemohon;
+    }
+
+    public function getEmailDisplayAttribute()
+    {
+        return $this->kategori === 'lembaga'
+            ? $this->email_organisasi
+            : $this->email_pemohon;
+    }
+
+    public function getCreatedDateAttribute()
+    {
+        return tgl_indo($this->created_at);
+    }
+
+    public function getRerataDisplay()
+    {
+        return $this->rerata_menjawab !== null
+            ? $this->rerata_menjawab
+            : '-';
+    }
 }

@@ -5,3 +5,13 @@
     padding-top: 16px;
     padding-top: 1rem;
 }
+
+.badge-kategori-lembaga {
+    background-color: #a900f8 !important; /* orange */
+    color: white !important;
+}
+
+.badge-kategori-perseorangan {
+    background-color: #00b6b3 !important; /* teal */
+    color: white !important;
+}

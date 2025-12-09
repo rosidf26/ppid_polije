@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\PermohonanInformasiRequest;
-use App\Http\Requests\KeberatanRequest;
+use App\Http\Requests\PernyataanKeberatanRequest;
 use App\Models\PermohonanInformasi;
 use App\Models\PernyataanKeberatan;
 
@@ -115,7 +115,7 @@ class BlangkoController extends Controller
         }
     }
 
-    public function keberatanSubmit(KeberatanRequest $request)
+    public function keberatanSubmit(PernyataanKeberatanRequest $request)
     {
         $data = $request->validated();
         try {

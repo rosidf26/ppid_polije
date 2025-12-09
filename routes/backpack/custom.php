@@ -24,4 +24,10 @@ Route::group([
     Route::crud('stakeholder', 'StakeholderCrudController');
     Route::crud('slideshow', 'SlideshowCrudController');
     Route::crud('comment', 'CommentCrudController');
+    Route::crud('permohonan-informasi', 'PermohonanInformasiCrudController');
+
+    Route::post(
+        'permohonan-informasi/{id}/update-status',
+        [\App\Http\Controllers\Admin\PermohonanInformasiCrudController::class, 'updateStatus']
+    )->name('permohonan.updateStatus');
 }); // this should be the absolute last line of this file
