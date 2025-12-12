@@ -16,6 +16,9 @@ use App\Http\Controllers\Admin\BackpackGoogleController;
 //     return view('welcome');
 // });
 
+Route::get('/rekapitulasi-permohonan-informasi-publik', 'BlangkoController@rekap')->name('rekap.grafik');
+
+Route::get('/rekapitulasi-permohonan-informasi-publik/data/{year}', 'BlangkoController@getData')->name('rekap.data');
 
 Route::get('/', 'PageController@index')
     ->name('beranda');

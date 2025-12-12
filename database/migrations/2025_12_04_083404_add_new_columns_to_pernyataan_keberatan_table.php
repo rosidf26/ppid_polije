@@ -14,7 +14,7 @@ class AddNewColumnsToPernyataanKeberatanTable extends Migration
     public function up()
     {
         Schema::table('pernyataan_keberatan', function (Blueprint $table) {
-            $table->enum('status', ['belum direspon', 'sudah direspon'])->after('kasus_posisi')->default('belum direspon');
+            $table->enum('status', ['belum direspon', 'diterima','ditolak'])->after('kasus_posisi')->default('belum direspon');
             $table->integer('rerata_menjawab')->after('status')->nullable();
         });
     }

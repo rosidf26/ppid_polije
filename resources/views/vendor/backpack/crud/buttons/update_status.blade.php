@@ -2,12 +2,15 @@
 $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-informasi');
 @endphp
 
-@if ($entry->status !== 'sudah direspon')
+{{-- TOMBOL HANYA MUNCUL JIKA STATUS MASIH BELUM DIRESPON --}}
+@if ($entry->status === 'belum direspon')
 <button class="btn btn-xs btn-warning update-status-btn" data-id="{{ $entry->id }}">
     <i class="la la-check"></i> Update Status
 </button>
 @endif
 
+
+{{-- MODAL (ditampilkan sekali saja) --}}
 @if (!isset($renderedUpdateStatusModal))
 @php $renderedUpdateStatusModal = true; @endphp
 
@@ -17,31 +20,34 @@ $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-inform
 
             <div class="modal-body text-center py-4">
 
-                {{-- ICON --}}
                 <div class="mb-3">
-                    <i class="la la-exclamation-circle" style="font-size:60px; color:#f8b84a;"></i>
+                    <i class="la la-info-circle" style="font-size:60px; color:#4a90e2;"></i>
                 </div>
 
-                {{-- JUDUL --}}
-                <h4 class="font-weight-bold mb-2" style="color:#4a4a4a;">
-                    Peringatan
+                <h4 class="font-weight-bold mb-3" style="color:#4a4a4a;">
+                    Update Status Permohonan
                 </h4>
 
-                {{-- TEKS --}}
-                <p class="mb-0" style="color:#777;">
-                    Apakah Anda yakin ingin mengubah status ?
-                </p>
+                <div class="form-group text-left px-4">
+                    <label for="statusSelect" class="font-weight-bold">Respon:</label>
+                    <select id="statusSelect" class="form-control">
+                        <option value="">-- Pilih Status --</option>
+                        <option value="diterima">Diterima</option>
+                        <option value="ditolak">Ditolak</option>
+                    </select>
+                </div>
 
             </div>
 
             <div class="modal-footer justify-content-center pb-4">
 
-                <button type="button" class="btn btn-light px-4" data-dismiss="modal" style="border:1px solid #ddd;">
+                <button type="button" class="btn btn-light px-4" data-dismiss="modal"
+                        style="border:1px solid #ddd;">
                     Batal
                 </button>
 
                 <button type="button" class="btn btn-success px-4" id="confirmUpdateStatus">
-                    Ya
+                    Update
                 </button>
 
             </div>
@@ -53,43 +59,63 @@ $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-inform
 @endif
 
 
+{{-- SCRIPT (ditampilkan sekali saja) --}}
+@if (!isset($renderedUpdateStatusScript))
+@php $renderedUpdateStatusScript = true; @endphp
+
 <script>
-    if (typeof window.updateStatusInit === "undefined") {
-        window.updateStatusInit = true;
+if (typeof window.updateStatusInit === "undefined") {
+    window.updateStatusInit = true;
 
-        let selectedId = null;
+   let selectedId;
 
-        // ketika tombol di dalam datatable diklik
-        $(document).on('click', '.update-status-btn', function() {
-            selectedId = $(this).data('id');
-            $('#updateStatusModal').modal('show');
-        });
+$(document).on('click', '.update-status-btn', function() {
+    selectedId = $(this).data('id');
+    $('#statusSelect').val(""); // reset dropdown
+    $('#updateStatusModal').modal('show');
+});
 
-        // ketika klik konfirmasi
-        $('#confirmUpdateStatus').click(function() {
+$('#confirmUpdateStatus').click(function() {
 
-            let url = "{{ url(config('backpack.base.route_prefix') . '/permohonan-informasi') }}/" +
-                selectedId + "/update-status";
+    let status = $('#statusSelect').val();
 
-            $.post(url, {
-                    _token: '{{ csrf_token() }}'
-                })
-                .done(function() {
-                    new Noty({
-                        type: 'success',
-                        text: 'Status berhasil diperbarui!'
-                    }).show();
-
-                    $('#updateStatusModal').modal('hide');
-
-                    crud.table.ajax.reload();
-                })
-                .fail(function() {
-                    new Noty({
-                        type: 'error',
-                        text: 'Terjadi kesalahan saat update status.'
-                    }).show();
-                });
-        });
+    if (!status) {
+        new Noty({
+            type: 'warning',
+            text: 'Silakan pilih status terlebih dahulu.'
+        }).show();
+        return;
     }
+
+    $.ajax({
+        url: "{{ url(config('backpack.base.route_prefix').'/permohonan-informasi') }}/" 
+             + selectedId + "/update-status",
+        type: "POST",
+        data: {
+            _token: "{{ csrf_token() }}",
+            status: status
+        },
+        success: function() {
+            new Noty({
+                type: 'success',
+                text: 'Status berhasil diperbarui!'
+            }).show();
+
+            $('#updateStatusModal').modal('hide');
+
+            crud.table.ajax.reload();
+        },
+        error: function() {
+            new Noty({
+                type: 'error',
+                text: 'Terjadi kesalahan saat update status.'
+            }).show();
+        }
+    });
+
+});
+
+}
 </script>
+
+@endif

@@ -16,6 +16,17 @@ Route::group([
     ),
     'namespace'  => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
+
+    Route::post(
+        'permohonan-informasi/{id}/update-status',
+        'PermohonanInformasiCrudController@updateStatus'
+    )->name('permohonan.updateStatus');
+
+    Route::get(
+        'permohonan-informasi/{id}/export-pdf',
+        'PermohonanInformasiCrudController@exportPdf'
+    )->name('permohonan.exportPdf');
+
     Route::crud('user', 'UserCrudController');
     Route::crud('tag', 'TagCrudController');
     Route::crud('article', 'ArticleCrudController');
@@ -26,8 +37,5 @@ Route::group([
     Route::crud('comment', 'CommentCrudController');
     Route::crud('permohonan-informasi', 'PermohonanInformasiCrudController');
 
-    Route::post(
-        'permohonan-informasi/{id}/update-status',
-        [\App\Http\Controllers\Admin\PermohonanInformasiCrudController::class, 'updateStatus']
-    )->name('permohonan.updateStatus');
+   
 }); // this should be the absolute last line of this file

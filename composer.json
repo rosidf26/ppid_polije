@@ -16,6 +16,7 @@
         "backpack/pagemanager": "^3.3",
         "backpack/permissionmanager": "^6.0",
         "backpack/settings": "^3.1",
+        "barryvdh/laravel-dompdf": "^2.2",
         "barryvdh/laravel-elfinder": "^0.4.7",
         "cviebrock/eloquent-sluggable": "^7.0",
         "doctrine/dbal": "^2.0",

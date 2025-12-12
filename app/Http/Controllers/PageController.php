@@ -778,11 +778,6 @@ class PageController extends Controller
         return view('frontpage.sections.statistik', compact('countA', 'countB', 'total'));
     }
 
-
-
-
-
-
     public function clear_cache()
     {
         Artisan::call('cache:clear');

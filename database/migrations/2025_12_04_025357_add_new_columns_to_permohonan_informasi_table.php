@@ -14,7 +14,7 @@ class AddNewColumnsToPermohonanInformasiTable extends Migration
     public function up()
     {
         Schema::table('permohonan_informasi', function (Blueprint $table) {
-            $table->enum('status', ['belum direspon', 'sudah direspon'])->after('alamat_info')->default('belum direspon');
+            $table->enum('status', ['belum direspon', 'diterima','ditolak'])->after('alamat_info')->default('belum direspon');
             $table->integer('rerata_menjawab')->after('status')->nullable();
         });
     }
