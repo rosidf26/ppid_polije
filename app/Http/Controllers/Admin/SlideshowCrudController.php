@@ -88,6 +88,7 @@ class SlideshowCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
     }
 
     /**
@@ -163,5 +164,17 @@ class SlideshowCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation();
+    }
+
+    protected function setupShowOperation()
+    {
+        // Tombol kembali sejajar tombol Delete
+        $this->crud->addButtonFromView(
+            'line',        // posisi tombol di baris action
+            'back_button', // nama tombol
+            'back_button', // view blade
+            'end'          // di kanan (sejajar delete)
+        );
+
     }
 }

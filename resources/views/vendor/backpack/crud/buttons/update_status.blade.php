@@ -4,7 +4,8 @@ $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-inform
 
 {{-- TOMBOL HANYA MUNCUL JIKA STATUS MASIH BELUM DIRESPON --}}
 @if ($entry->status === 'belum direspon')
-<button class="btn btn-xs btn-warning update-status-btn" data-id="{{ $entry->id }}">
+<button class="btn btn-xs btn-warning update-status-btn"
+        data-id="{{ $entry->getKey() }}">
     <i class="la la-check"></i> Update Status
 </button>
 @endif
@@ -29,13 +30,18 @@ $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-inform
                 </h4>
 
                 <div class="form-group text-left px-4">
-                    <label for="statusSelect" class="font-weight-bold">Respon:</label>
+                    <!-- <label for="statusSelect" class="font-weight-bold"></label> -->
                     <select id="statusSelect" class="form-control">
                         <option value="">-- Pilih Status --</option>
                         <option value="diterima">Diterima</option>
                         <option value="ditolak">Ditolak</option>
                     </select>
                 </div>
+
+                <div class="form-group text-left px-4" >
+    <label class="font-weight-bold"> Respon: </label>
+    <textarea id="respon" class="form-control" rows="3" placeholder="Masukkan respon..."></textarea>
+</div>
 
             </div>
 
@@ -64,58 +70,99 @@ $baseUrl = url(config('backpack.base.route_prefix', 'admin').'/permohonan-inform
 @php $renderedUpdateStatusScript = true; @endphp
 
 <script>
-if (typeof window.updateStatusInit === "undefined") {
-    window.updateStatusInit = true;
+	(function waitForJquery() {
+		if (typeof window.jQuery === 'undefined') {
+			setTimeout(waitForJquery, 50);
+			return;
+		}
 
-   let selectedId;
+		// ===============================
+		// jQuery SUDAH SIAP
+		// ===============================
+		jQuery(function($) {
 
-$(document).on('click', '.update-status-btn', function() {
-    selectedId = $(this).data('id');
-    $('#statusSelect').val(""); // reset dropdown
-    $('#updateStatusModal').modal('show');
-});
+			if (typeof window.updateStatusInit !== "undefined") {
+				return;
+			}
+			window.updateStatusInit = true;
 
-$('#confirmUpdateStatus').click(function() {
+			let selectedId = null;
 
-    let status = $('#statusSelect').val();
+			$(document).on('click', '.update-status-btn', function() {
+				selectedId = $(this).data('id');
 
-    if (!status) {
-        new Noty({
-            type: 'warning',
-            text: 'Silakan pilih status terlebih dahulu.'
-        }).show();
-        return;
-    }
+				$('#statusSelect').val("");
+				// $('#alasanDitolak').val("");
+				// $('#alasanDitolakWrapper').addClass('d-none');
 
-    $.ajax({
-        url: "{{ url(config('backpack.base.route_prefix').'/permohonan-informasi') }}/" 
-             + selectedId + "/update-status",
-        type: "POST",
-        data: {
-            _token: "{{ csrf_token() }}",
-            status: status
-        },
-        success: function() {
-            new Noty({
-                type: 'success',
-                text: 'Status berhasil diperbarui!'
-            }).show();
+				$('#updateStatusModal').modal('show');
+			});
 
-            $('#updateStatusModal').modal('hide');
+			// $('#statusSelect').on('change', function() {
+			// 	if ($(this).val() === 'ditolak') {
+			// 		$('#alasanDitolakWrapper').removeClass('d-none');
+			// 	} else {
+			// 		$('#alasanDitolakWrapper').addClass('d-none');
+			// 		$('#alasanDitolak').val('');
+			// 	}
+			// });
 
-            crud.table.ajax.reload();
-        },
-        error: function() {
-            new Noty({
-                type: 'error',
-                text: 'Terjadi kesalahan saat update status.'
-            }).show();
-        }
-    });
+			$('#confirmUpdateStatus').on('click', function() {
 
-});
+				let status = $('#statusSelect').val();
+				let respon = $('#respon').val();
 
-}
+				if (!status) {
+					new Noty({
+						type: 'warning',
+						text: 'Silakan pilih status terlebih dahulu.'
+					}).show();
+					return;
+				}
+
+				// if (status === 'ditolak' && !alasanDitolak.trim()) {
+				// 	new Noty({
+				// 		type: 'warning',
+				// 		text: 'Alasan penolakan wajib diisi.'
+				// 	}).show();
+				// 	return;
+				// }
+
+				$.ajax({
+					url: "{{ url(config('backpack.base.route_prefix').'/permohonan-informasi') }}/" +
+						selectedId + "/update-status",
+					type: "POST",
+					data: {
+						_token: "{{ csrf_token() }}",
+						status: status,
+						respon: respon
+					},
+					success: function() {
+						new Noty({
+							type: 'success',
+							text: 'Status berhasil diperbarui!'
+						}).show();
+
+						$('#updateStatusModal').modal('hide');
+
+						if (typeof crud !== 'undefined' && crud.table) {
+							crud.table.ajax.reload(null, false);
+						} else {
+							location.reload();
+						}
+					},
+					error: function() {
+						new Noty({
+							type: 'error',
+							text: 'Terjadi kesalahan saat update status.'
+						}).show();
+					}
+				});
+			});
+
+		});
+
+	})(); 
 </script>
 
 @endif

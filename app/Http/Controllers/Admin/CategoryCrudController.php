@@ -38,6 +38,7 @@ class CategoryCrudController extends CrudController
                 },
             ],
         ]);
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
     }
 
     protected function setupShowOperation()
@@ -46,6 +47,7 @@ class CategoryCrudController extends CrudController
 
         CRUD::addColumn('created_at');
         CRUD::addColumn('updated_at');
+        $this->crud->addButtonFromView('line', 'back_button', 'back_button', 'end');
     }
 
     protected function setupCreateOperation()

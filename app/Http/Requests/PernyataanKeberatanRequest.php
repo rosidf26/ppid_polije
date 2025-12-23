@@ -14,12 +14,11 @@ class PernyataanKeberatanRequest extends FormRequest
     public function rules()
     {
         return [
-
-            'nama_pemohon'       => 'required|string|max:150',
-            'pekerjaan_pemohon'  => 'required|string|max:255',
+            'nama_pemohon' => 'required|string|max:150',
+            'pekerjaan_pemohon' => 'required|string|max:255',
             'nama_kuasa_pemohon' => 'required|string|max:150',
-            'alasan_keberatan'   => 'required|string|min:5',
-            'kasus_posisi'       => 'required|string|max:255',
+            'alasan_keberatan' => 'required|string|min:5',
+            'kasus_posisi' => 'required|string|max:255',
         ];
     }
 

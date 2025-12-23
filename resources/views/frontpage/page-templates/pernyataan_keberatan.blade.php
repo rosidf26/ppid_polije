@@ -34,7 +34,7 @@
                                         {{ session('success') }}
                                     </div>
                                     @endif
-
+                                    <input type="hidden" name="permohonan_id" value="{{ $permohonan->id }}">
                                     <div class="form-group row">
                                         <label class="col-lg-3 control-label text-lg-right pt-2">Nama Pemohon</label>
                                         <div class="col-lg-6">

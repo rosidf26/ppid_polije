@@ -9,10 +9,11 @@ class PermohonanInformasiSeeder extends Seeder
 {
     public function run()
     {
-        $faker = \Faker\Factory::create();
+        $faker = \Faker\Factory::create('id_ID');
 
         $kategori_list = ['perseorangan', 'lembaga'];
         $sumber_info_list = ['pertanyaan', 'website', 'medsos'];
+        $status_list = ['belum direspon', 'diterima', 'ditolak'];
 
         $info_list = [
             'Permohonan informasi keterbukaan publik',
@@ -23,69 +24,84 @@ class PermohonanInformasiSeeder extends Seeder
             'Ringkasan laporan kegiatan',
         ];
 
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 0; $i < 100; $i++) {
 
-            $kategori = $kategori_list[array_rand($kategori_list)];
+            $kategori = $faker->randomElement($kategori_list);
+            $status = $faker->randomElement($status_list);
 
-            // Tahun random 2020 - 2025
-            $created = Carbon::create(
+            // ===============================
+            // TANGGAL PENGAJUAN
+            // ===============================
+            $tgl_pengajuan = Carbon::create(
                 rand(2020, 2025),
                 rand(1, 12),
-                rand(1, 28),
-                rand(7, 16),
-                rand(0, 59),
-                0
+                rand(1, 28)
             );
 
-            // Status acak
-            $status = rand(0, 1) ? 'diterima' : 'belum direspon';
+            // ===============================
+            // LOGIKA RESPON
+            // ===============================
+            $tgl_direspon = null;
+            $waktu_menjawab = null;
+            $respon = null;
 
-            // Jika diterima, generate lama menjawab
-            $rerata = $status === 'diterima' ? rand(0, 10) : null;
-
-            $updated = $status === 'diterima'
-                ? $created->copy()->addDays($rerata)
-                : $created;
+            if ($status !== 'belum direspon') {
+                $waktu_menjawab = rand(1, 14);
+                $tgl_direspon = (clone $tgl_pengajuan)->addDays($waktu_menjawab);
+                $respon = $faker->sentence(8);
+            }
 
             DB::table('permohonan_informasi')->insert([
 
-                // -- KATEGORI --
+                // ===== KATEGORI =====
                 'kategori' => $kategori,
 
-                // -- PERSEORANGAN --
-                'nama_pemohon'   => $kategori === 'perseorangan' ? $faker->name : null,
-                'alamat_pemohon' => $kategori === 'perseorangan' ? $faker->address : null,
-                'hp_pemohon'     => $kategori === 'perseorangan' ? $faker->phoneNumber : null,
-                'email_pemohon'  => $kategori === 'perseorangan' ? $faker->email : null,
-                'ktp_pemohon'    => $kategori === 'perseorangan' ? 'ktp_' . Str::random(10) . '.pdf' : null,
+                // ===== PERSEORANGAN =====
+                'nama_pemohon' => $kategori === 'perseorangan' ? $faker->name : null,
+                'alamat_pemohon' => $kategori === 'perseorangan' ? Str::limit($faker->address, 255, '') : null,
+                'hp_pemohon' => $kategori === 'perseorangan' ? $faker->numerify('08##########') : null,
+                'email_pemohon' => $kategori === 'perseorangan' ? $faker->safeEmail : null,
+                'ktp_pemohon' => $kategori === 'perseorangan'
+                    ? 'ktp_pemohon/' . Str::random(15) . '.pdf'
+                    : null,
 
-                'nama_pengguna'   => $kategori === 'perseorangan' ? $faker->name : null,
-                'alamat_pengguna' => $kategori === 'perseorangan' ? $faker->address : null,
-                'hp_pengguna'     => $kategori === 'perseorangan' ? $faker->phoneNumber : null,
-                'email_pengguna'  => $kategori === 'perseorangan' ? $faker->email : null,
-                'ktp_pengguna'    => $kategori === 'perseorangan' ? 'ktp_' . Str::random(10) . '.pdf' : null,
+                // ===== PENGGUNA INFORMASI =====
+                'nama_pengguna' => $kategori === 'perseorangan' ? $faker->name : null,
+                'alamat_pengguna' => $kategori === 'perseorangan' ? Str::limit($faker->address, 255, '') : null,
+                'hp_pengguna' => $kategori === 'perseorangan' ? $faker->numerify('08##########') : null,
+                'email_pengguna' => $kategori === 'perseorangan' ? $faker->safeEmail : null,
+                'ktp_pengguna' => $kategori === 'perseorangan'
+                    ? 'ktp_pengguna/' . Str::random(15) . '.pdf'
+                    : null,
 
-                // -- LEMBAGA --
-                'nama_organisasi'   => $kategori === 'lembaga' ? $faker->company : null,
-                'telp_organisasi'   => $kategori === 'lembaga' ? $faker->phoneNumber : null,
-                'email_organisasi'  => $kategori === 'lembaga' ? $faker->companyEmail : null,
-                'medsos_organisasi' => $kategori === 'lembaga' ? '@' . Str::random(8) : null,
-                'nama_narahubung'   => $kategori === 'lembaga' ? $faker->name : null,
-                'telp_narahubung'   => $kategori === 'lembaga' ? $faker->phoneNumber : null,
-                'ktp_narahubung'    => $kategori === 'lembaga' ? 'ktp_' . Str::random(10) . '.pdf' : null,
+                // ===== LEMBAGA =====
+                'nama_organisasi' => $kategori === 'lembaga' ? $faker->company : null,
+                'telp_organisasi' => $kategori === 'lembaga' ? $faker->numerify('0###########') : null,
+                'email_organisasi' => $kategori === 'lembaga' ? $faker->companyEmail : null,
+                'medsos_organisasi' => $kategori === 'lembaga' ? '@' . Str::lower(Str::random(8)) : null,
+                'nama_narahubung' => $kategori === 'lembaga' ? $faker->name : null,
+                'telp_narahubung' => $kategori === 'lembaga' ? $faker->numerify('08##########') : null,
+                'ktp_narahubung' => $kategori === 'lembaga'
+                    ? 'ktp_narahubung/' . Str::random(15) . '.pdf'
+                    : null,
 
-                // -- KEBUTUHAN INFORMASI --
-                'info_dibutuhkan' => $info_list[array_rand($info_list)],
-                'alasan_butuh'    => $faker->sentence(10),
-                'sumber_info'     => $sumber_info_list[array_rand($sumber_info_list)],
-                'alamat_info'     => $faker->address,
+                // ===== INFORMASI =====
+                'info_dibutuhkan' => $faker->randomElement($info_list),
+                'alasan_butuh' => $faker->paragraph(2),
+                'sumber_info' => $faker->randomElement($sumber_info_list),
+                'alamat_info' => $faker->boolean ? $faker->url : null,
 
-                // -- STATUS & WAKTU --
-                'status'          => $status,
-                'rerata_menjawab' => $rerata,
+                // ===== STATUS =====
+                'status' => $status,
+                'respon' => $respon,
+                'tgl_pengajuan' => $tgl_pengajuan->toDateString(),
+                'tgl_direspon' => $tgl_direspon ? $tgl_direspon->toDateString() : null,
+                'waktu_menjawab' => $waktu_menjawab,
 
-                'created_at'      => $created,
-                'updated_at'      => $updated,
+                // ===== SYSTEM =====
+                'unik_request' => 'REQ-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
+                'created_at' => $tgl_pengajuan,
+                'updated_at' => $tgl_direspon ?? $tgl_pengajuan,
             ]);
         }
     }

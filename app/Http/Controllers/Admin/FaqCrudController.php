@@ -39,6 +39,7 @@ class FaqCrudController extends CrudController
     {
         CRUD::addColumn(['name' => 'question', 'label' => 'Question']);
         CRUD::addColumn(['name' => 'answer', 'label' => 'Answer']);
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
     }
 
     protected function setupCreateOperation()
@@ -61,5 +62,17 @@ class FaqCrudController extends CrudController
     protected function setupUpdateOperation()
     {
         $this->setupCreateOperation(); // Reuse the same fields for update
+    }
+
+    protected function setupShowOperation()
+    {
+        // Tombol kembali sejajar tombol Delete
+        $this->crud->addButtonFromView(
+            'line',        // posisi tombol di baris action
+            'back_button', // nama tombol
+            'back_button', // view blade
+            'end'          // di kanan (sejajar delete)
+        );
+
     }
 }

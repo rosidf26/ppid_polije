@@ -21,6 +21,11 @@ class TagCrudController extends CrudController
         $this->crud->setFromDb();
     }
 
+    protected function setupListOperation()
+    {
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
+    }
+
     protected function setupCreateOperation()
     {
         $this->crud->setValidation(TagRequest::class);
@@ -30,4 +35,5 @@ class TagCrudController extends CrudController
     {
         $this->crud->setValidation(TagRequest::class);
     }
+
 }

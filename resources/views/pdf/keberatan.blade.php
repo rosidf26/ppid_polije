@@ -103,8 +103,11 @@
 
 <body>
 
+    <!-- <img src="{{ public_path('frontpage/img/logo.png') }}" class="watermark"> -->
+
+
     <div class="content">
-        <div class="title">Permohonan Informasi - Perseorangan</div>
+        <div class="title">Bukti Pernyataan Keberatan</div>
         @php
             $sudahDirespon = in_array($data->status, ['diterima', 'ditolak']);
         @endphp
@@ -138,33 +141,12 @@
                 <td>{{ $data->nama_pemohon }}</td>
             </tr>
             <tr>
-                <td class="label">Alamat Pemohon:</td>
-                <td>{{ $data->alamat_pemohon }}</td>
+                <td class=" label">Pekerjaan Pemohon:</td>
+                <td>{{ $data->pekerjaan_pemohon }}</td>
             </tr>
             <tr>
-                <td class="label">HP Pemohon:</td>
-                <td>{{ $data->hp_pemohon }}</td>
-            </tr>
-            <tr>
-                <td class="label">Email Pemohon:</td>
-                <td>{{ $data->email_pemohon }}</td>
-            </tr>
-
-            <tr>
-                <td class="label">Nama Pengguna:</td>
-                <td>{{ $data->nama_pengguna ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Alamat Pengguna:</td>
-                <td>{{ $data->alamat_pengguna ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td class="label">HP Pengguna:</td>
-                <td>{{ $data->hp_pengguna ?? '-' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Email Pengguna:</td>
-                <td>{{ $data->email_pengguna ?? '-' }}</td>
+                <td class="label">Nama Kuasa Pemohon:</td>
+                <td>{{ $data->nama_kuasa_pemohon }}</td>
             </tr>
             @if ($sudahDirespon)
                 <tr>
@@ -183,11 +165,11 @@
         </table>
 
         <hr>
-        <div class="label">Informasi Dibutuhkan:</div>
-        <p>{{ $data->info_dibutuhkan }}</p>
+        <div class="label">Alasan Keberatan:</div>
+        <p>{{ $data->alasan_keberatan }}</p>
 
-        <div class="label">Alasan Butuh:</div>
-        <p>{{ $data->alasan_butuh }}</p>
+        <div class="label">Kasus Posisi:</div>
+        <p>{{ $data->kasus_posisi }}</p>
 
         @if ($sudahDirespon)
             <hr>

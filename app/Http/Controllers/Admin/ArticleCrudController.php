@@ -34,6 +34,7 @@ class ArticleCrudController extends CrudController
         |--------------------------------------------------------------------------
         */
         $this->crud->operation('list', function () {
+            $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
             $this->crud->addColumn('title');
             $this->crud->addColumn([
                 'name' => 'date',
@@ -161,6 +162,18 @@ class ArticleCrudController extends CrudController
                 'type' => 'checkbox',
             ]);
         });
+    }
+
+    protected function setupShowOperation()
+    {
+        // Tombol kembali sejajar tombol Delete
+        $this->crud->addButtonFromView(
+            'line',        // posisi tombol di baris action
+            'back_button', // nama tombol
+            'back_button', // view blade
+            'end'          // di kanan (sejajar delete)
+        );
+
     }
 
     /**

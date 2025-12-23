@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Faq;
 use App\Models\Slideshow;
 use App\Models\Stakeholder;
+use App\Models\PermohonanInformasi;
 use App\Models\PernyataanKeberatan;
 use Backpack\MenuCRUD\app\Models\MenuItem;
 use Backpack\NewsCRUD\app\Models\Tag;
@@ -183,11 +184,11 @@ class PageController extends Controller
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-                // return view('frontpage.page-templates.info_publik')
-                //     ->with('menus', $menus)
-                //     ->with('page', $page)
-                //     ->with('page_extra', $page_extra)
-                //     ->with('settings', $settings);
+            // return view('frontpage.page-templates.info_publik')
+            //     ->with('menus', $menus)
+            //     ->with('page', $page)
+            //     ->with('page_extra', $page_extra)
+            //     ->with('settings', $settings);
             case "tentang_polije":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
@@ -270,6 +271,14 @@ class PageController extends Controller
                     preg_match_all("/'([^']+)'/", $type, $matches);
                     $alasan_keberatan = $matches[1];
 
+                    $permohonanId = session('permohonan_keberatan_id');
+
+                    if (!$permohonanId) {
+                        abort(403, 'Akses tidak valid');
+                    }
+
+                    $permohonan = PermohonanInformasi::findOrFail($permohonanId);
+
                     $view = "frontpage.page-templates.pernyataan_keberatan";
                 } else {
                     // default jika slug tidak dikenali
@@ -278,10 +287,11 @@ class PageController extends Controller
 
                 if (View::exists($view)) {
                     return view($view, [
-                        'menus'            => $menus,
-                        'page'             => $page,
-                        'page_extra'       => $page_extra,
-                        'settings'         => $settings,
+                        'menus' => $menus,
+                        'page' => $page,
+                        'page_extra' => $page_extra,
+                        'settings' => $settings,
+                        'permohonan' => $permohonan,
                         'alasan_keberatan' => $alasan_keberatan ?? null,
                     ]);
                 }
@@ -590,7 +600,8 @@ class PageController extends Controller
                 ->with('menus', $menus)
                 ->with('settings', $settings)
                 ->with('faq', $faq);
-        } else return Redirect::route('beranda');
+        } else
+            return Redirect::route('beranda');
     }
 
     public function komentar()
@@ -606,7 +617,8 @@ class PageController extends Controller
             return view('frontpage.' . 'kirim_komentar')
                 ->with('menus', $menus)
                 ->with('settings', $settings);
-        } else return Redirect::route('beranda');
+        } else
+            return Redirect::route('beranda');
     }
 
     public function tree_element($entry, $key, $all_entries, $crud, $html)

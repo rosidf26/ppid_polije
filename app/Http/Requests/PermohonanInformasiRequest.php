@@ -8,7 +8,7 @@ class PermohonanInformasiRequest extends FormRequest
 {
     public function authorize()
     {
-        return backpack_auth()->check();
+        return true;
     }
 
     public function rules()
@@ -18,34 +18,34 @@ class PermohonanInformasiRequest extends FormRequest
             'kategori' => 'required|in:perseorangan,lembaga',
 
             // --- FORM PERORANGAN ---
-            'nama_pemohon'    => 'required_if:kategori,perseorangan|string|max:150',
-            'alamat_pemohon'  => 'required_if:kategori,perseorangan|string|max:255',
-            'hp_pemohon'      => 'required_if:kategori,perseorangan|numeric|digits_between:8,15',
-            'email_pemohon'   => 'required_if:kategori,perseorangan|email|max:150',
-            'ktp_pemohon'     => 'required_if:kategori,perseorangan|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'nama_pemohon' => 'required_if:kategori,perseorangan|string|max:150',
+            'alamat_pemohon' => 'required_if:kategori,perseorangan|string|max:255',
+            'hp_pemohon' => 'required_if:kategori,perseorangan|regex:/^[0-9]{8,15}$/',
+            'email_pemohon' => 'required_if:kategori,perseorangan|email|max:150',
+            'ktp_pemohon' => 'required_if:kategori,perseorangan|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
-            'nama_pengguna'   => 'nullable|string|max:150',
+            'nama_pengguna' => 'nullable|string|max:150',
             'alamat_pengguna' => 'nullable|string|max:255',
-            'hp_pengguna'     => 'nullable|numeric|digits_between:8,15',
-            'email_pengguna'  => 'nullable|email|max:150',
-            'ktp_pengguna'    => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'hp_pengguna' => 'nullable|regex:/^[0-9]{8,15}$/',
+            'email_pengguna' => 'nullable|email|max:150',
+            'ktp_pengguna' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
 
             // --- FORM LEMBAGA ---
-            'nama_organisasi'   => 'required_if:kategori,lembaga|string|max:150',
-            'telp_organisasi'   => 'required_if:kategori,lembaga|numeric|digits_between:8,15',
-            'email_organisasi'  => 'required_if:kategori,lembaga|email|max:150',
+            'nama_organisasi' => 'required_if:kategori,lembaga|string|max:150',
+            'telp_organisasi' => 'required_if:kategori,lembaga|regex:/^[0-9]{8,15}$/',
+            'email_organisasi' => 'required_if:kategori,lembaga|email|max:150',
             'medsos_organisasi' => 'nullable|string|max:255',
 
-            'nama_narahubung'   => 'required_if:kategori,lembaga|string|max:150',
-            'telp_narahubung'   => 'required_if:kategori,lembaga|numeric|digits_between:8,15',
-            'ktp_narahubung'    => 'required_if:kategori,lembaga|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'nama_narahubung' => 'required_if:kategori,lembaga|string|max:150',
+            'telp_narahubung' => 'required_if:kategori,lembaga|regex:/^[0-9]{8,15}$/',
+            'ktp_narahubung' => 'required_if:kategori,lembaga|file|mimes:jpg,jpeg,png,pdf|max:2048',
 
             // --- FORM INFORMASI (WAJIB DI KEDUA KATEGORI) ---
             'info_dibutuhkan' => 'required|string|min:5',
-            'alasan_butuh'    => 'required|string|min:5',
-            'sumber_info'     => 'required|in:pertanyaan,website,medsos',
-            'alamat_info'     => 'required_if:sumber_info,website,medsos|string|max:255',
+            'alasan_butuh' => 'required|string|min:5',
+            'sumber_info' => 'required|in:pertanyaan,website,medsos',
+            'alamat_info' => 'required_if:sumber_info,website|required_if:sumber_info,medsos|string|max:255',
         ];
     }
 
@@ -60,25 +60,26 @@ class PermohonanInformasiRequest extends FormRequest
             'nama_pemohon.required_if' => 'Nama pemohon wajib diisi.',
             'alamat_pemohon.required_if' => 'Alamat pemohon wajib diisi.',
             'hp_pemohon.required_if' => 'Nomor HP pemohon wajib diisi.',
-            'hp_pemohon.numeric' => 'Nomor HP hanya boleh berisi angka.',
+            'hp_pemohon.regex' => 'Nomor HP pemohon harus 8–15 digit angka.',
             'email_pemohon.required_if' => 'Email pemohon wajib diisi.',
             'email_pemohon.email' => 'Format email pemohon tidak valid.',
             'ktp_pemohon.required_if' => 'Silakan upload file KTP pemohon.',
             'ktp_pemohon.mimes' => 'File identitas harus jpg / jpeg / png / pdf.',
+            'ktp_pemohon.max' => 'Ukuran file maksimal 2 MB.',
 
             // lembaga
             'nama_organisasi.required_if' => 'Nama organisasi wajib diisi.',
             'telp_organisasi.required_if' => 'Telp organisasi wajib diisi.',
-            'telp_organisasi.numeric' => 'Telp organisasi hanya boleh angka.',
+            'telp_organisasi.regex' => 'Telp organisasi harus 8–15 digit angka.',
             'email_organisasi.required_if' => 'Email organisasi wajib diisi.',
             'email_organisasi.email' => 'Format email organisasi tidak valid.',
 
             'nama_narahubung.required_if' => 'Nama narahubung wajib diisi.',
             'telp_narahubung.required_if' => 'Telp narahubung wajib diisi.',
-            'telp_narahubung.numeric' => 'Telp narahubung hanya boleh angka.',
+            'telp_narahubung.regex' => 'Telp narahubung harus 8–15 digit angka.',
             'ktp_narahubung.required_if' => 'Silakan upload file KTP narahubung.',
             'ktp_narahubung.mimes' => 'File identitas harus jpg / jpeg / png / pdf.',
-            'ktp_narahubung.max' => 'File tidak boleh lebih dari 2048 kilobytes.',
+            'ktp_narahubung.max' => 'Ukuran file maksimal 2 MB.',
 
             // informasi
             'info_dibutuhkan.required' => 'Informasi yang dibutuhkan wajib diisi.',

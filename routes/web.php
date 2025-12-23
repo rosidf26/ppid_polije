@@ -16,10 +16,44 @@ use App\Http\Controllers\Admin\BackpackGoogleController;
 //     return view('welcome');
 // });
 
-Route::get('/rekapitulasi-permohonan-informasi-publik', 'BlangkoController@rekap')->name('rekap.grafik');
+Route::get('/rekapitulasi-permohonan-informasi', 'BlangkoController@rekap')->name('rekap.grafik');
 
-Route::get('/rekapitulasi-permohonan-informasi-publik/data/{year}', 'BlangkoController@getData')->name('rekap.data');
+Route::get('/rekapitulasi-permohonan-informasi/data/{year}', 'BlangkoController@getData')->name('rekap.data');
 
+Route::post('/kirim-permohonan-informasi', 'BlangkoController@permohonanSubmit')->name('permohonan.store');
+Route::get('/permohonan-informasi/sukses/{unik_request}', 'BlangkoController@permohonanSukses')->name('permohonan.sukses');
+Route::get('/permohonan-informasi/download/{unik_request}', 'BlangkoController@downloadPermohonan')->name('permohonan.download');
+// Cek status permohonan
+Route::get('/cek-status-permohonan', 'BlangkoController@cekPStatus')
+    ->name('permohonan.cek-status');
+
+Route::post('/hasil-cek-status-permohonan', 'BlangkoController@cekPStatusResult')
+    ->name('permohonan.cek-status.result');
+
+Route::middleware('web')->group(function () {
+
+    Route::get('/cari-permohonan', 'BlangkoController@formCariP')
+        ->name('permohonan.cari');
+
+    Route::post('/hasil-cari-permohonan', 'BlangkoController@cariPermohonan')
+        ->name('permohonan.hasil-cari');
+
+    Route::post('/kirim-pernyataan-keberatan', 'BlangkoController@keberatanSubmit')->name('keberatan.store');
+
+    Route::get('/pernyataan-keberatan/sukses/{unik_request}', 'BlangkoController@keberatanSukses')->name('keberatan.sukses');
+
+    Route::get('/pernyataan-keberatan/download/{unik_request}', 'BlangkoController@downloadKeberatan')->name('keberatan.download');
+
+    Route::get('/cek-status-keberatan', 'BlangkoController@cekKStatus')
+        ->name('keberatan.cek-status');
+
+    Route::post('/hasil-cek-status-keberatan', 'BlangkoController@cekKStatusResult')
+        ->name('keberatan.cek-status.result');
+
+    Route::get('/rekapitulasi-pernyataan-keberatan', 'BlangkoController@rekapKeberatan')->name('rekap.grafik_keberatan');
+
+    Route::get('/rekapitulasi-pernyataan-keberatan/data/{year}', 'BlangkoController@getDataKeberatan')->name('rekap.data_keberatan');
+});
 Route::get('/', 'PageController@index')
     ->name('beranda');
 
@@ -62,7 +96,7 @@ Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
 
 Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
 
-Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
+// Route::get('/e-blangko/{slug}', 'PageController@informasiPublik')->name('form.blangko');
 
 Route::group([
     'prefix' => 'admin',
@@ -75,6 +109,6 @@ Route::group([
         ->name('backpack.auth.google.callback');
 });
 
-Route::post('/kirim-permohonan-informasi', 'BlangkoController@permohonanSubmit')->name('permohonan.store');
 
-Route::post('/kirim-pernyataan-keberatan', 'BlangkoController@keberatanSubmit')->name('keberatan.store');
+// Proses verifikasi permohonan
+

@@ -62,7 +62,23 @@ class CreatePermohonanInformasiTable extends Migration
             $table->enum('sumber_info', ['pertanyaan', 'website', 'medsos']);
             $table->string('alamat_info', 255)->nullable();
 
+            $table->enum('status', ['belum direspon', 'diterima', 'ditolak'])->default('belum direspon');
+
+            $table->string('respon', 255)->nullable();
+
+            // Tanggal resmi pengajuan
+            $table->date('tgl_pengajuan')
+                ->nullable()
+                ->comment('Tanggal resmi permohonan diajukan');
+
+            // Tanggal permohonan direspon PPID
+            $table->date('tgl_direspon')
+                ->nullable()
+                ->comment('Tanggal permohonan direspon');
+
+            $table->integer('waktu_menjawab')->nullable();
             // timestamps
+            $table->string('unik_request', 50)->nullable()->unique();
             $table->timestamps();
         });
     }
