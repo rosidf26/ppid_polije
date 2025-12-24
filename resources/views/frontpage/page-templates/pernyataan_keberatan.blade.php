@@ -12,7 +12,7 @@
         @include('frontpage.templates.header')
         <div role="main" class="main">
             <!-- ini header -->
-            @include('frontpage.sections.page_header')
+            @include('frontpage.sections.page_title')
             <div class="container py-4">
                 <div class="row">
                     <div class="col">
@@ -155,7 +155,7 @@
 
     <!-- ini js -->
     @include('frontpage.templates.js')
-    @include('frontpage.reset_blangko_info')
+    @include('frontpage.other-pages.reset_blangko')
 </body>
 
 </html>

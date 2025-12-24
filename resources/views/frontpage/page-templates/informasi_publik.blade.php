@@ -35,12 +35,9 @@
                                             $options = json_decode($options, true);
                                         }
                                     @endphp
-                                    @if (!empty($page_extra->get('featured_image')))
-                                        <img src="{{ url($page_extra->get('featured_image')) }}" alt="Featured Image"
-                                            class="img-fluid img-thumbnail img-thumbnail-no-borders rounded-0">
-                                    @endif
                                     @if(!empty($options) && is_array($options))
                                         <div class="table-responsive">
+
                                             <table class="table table-striped mt-3">
                                                 <thead>
                                                     <tr>
@@ -48,44 +45,57 @@
                                                             No
                                                         </th>
                                                         <th>
-                                                            Nama
+                                                            Keterangan
                                                         </th>
                                                         <th>
-                                                            Pangkat / Jabatan
-                                                        </th>
-                                                        <th>
-                                                            Diangkat Dalam Jabatan
+                                                            Link
                                                         </th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
                                                     @foreach($options as $row)
                                                         <tr>
+
                                                             <td>{{ $row['no'] ?? '' }}</td>
-                                                            <td>{{ $row['name'] ?? '' }}</td>
-                                                            <td>{{ $row['pangkat'] ?? '' }}</td>
-                                                            <td>{{ $row['status'] ?? '' }}</td>
+                                                            <td>{{ $row['desc'] ?? '' }}</td>
+                                                            <td>
+                                                                @if(!empty($row['link']))
+                                                                    <a href="{{ $row['link'] }}"
+                                                                        class="btn btn-outline btn-success btn-xs" target="_blank">
+                                                                        Lihat <span><i class="fas fa-chevron-right"></i></span>
+                                                                    </a>
+                                                                @else
+                                                                    <span class="text-muted">-</span>
+                                                                @endif
+                                                            </td>
                                                         </tr>
                                                     @endforeach
                                                 </tbody>
                                             </table>
+
+                                            <hr class="solid my-2">
                                         </div>
 
+                                    @else
+                                        <div class="alert alert-danger">
+                                            Belum ada data tersedia.
+                                        </div>
                                     @endif
                                 </div>
-
                             </article>
-
                         </div>
+
+
                     </div>
                 </div>
-
             </div>
 
         </div>
 
-        <!-- ini footer -->
-        @include('frontpage.templates.footer')
+    </div>
+
+    <!-- ini footer -->
+    @include('frontpage.templates.footer')
     </div>
 
     <!-- ini js -->

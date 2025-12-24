@@ -12,7 +12,7 @@
         @include('frontpage.templates.header')
         <div role="main" class="main">
             <!-- ini header -->
-            @include('frontpage.sections.page_header')
+            @include('frontpage.sections.page_title')
             <div class="container py-4">
                 <div class="row">
                     <div class="col">
@@ -22,7 +22,7 @@
                                     telah Anda ajukan.</h5>
                             </header>
                             <div class="card-body">
-                                <form method="POST" action="{{ route('permohonan.hasil-cari') }}">
+                                <form method="POST" action="{{ route('permohonan.result_search') }}">
                                     @csrf
                                     <div class="justify-content-center text-center">
                                         @if ($errors->has('not_found'))

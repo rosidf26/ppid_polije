@@ -16,44 +16,44 @@ use App\Http\Controllers\Admin\BackpackGoogleController;
 //     return view('welcome');
 // });
 
-Route::get('/rekapitulasi-permohonan-informasi', 'BlangkoController@rekap')->name('rekap.grafik');
-
-Route::get('/rekapitulasi-permohonan-informasi/data/{year}', 'BlangkoController@getData')->name('rekap.data');
-
-Route::post('/kirim-permohonan-informasi', 'BlangkoController@permohonanSubmit')->name('permohonan.store');
-Route::get('/permohonan-informasi/sukses/{unik_request}', 'BlangkoController@permohonanSukses')->name('permohonan.sukses');
+Route::post('/kirim-permohonan-informasi', 'BlangkoController@storePermohonan')->name('permohonan.store');
+Route::get('/permohonan-informasi/sukses/{unik_request}', 'BlangkoController@successPermohonan')->name('permohonan.success');
 Route::get('/permohonan-informasi/download/{unik_request}', 'BlangkoController@downloadPermohonan')->name('permohonan.download');
 // Cek status permohonan
-Route::get('/cek-status-permohonan', 'BlangkoController@cekPStatus')
-    ->name('permohonan.cek-status');
+Route::get('/cek-status-permohonan', 'BlangkoController@checkPermohonan')
+    ->name('permohonan.check');
 
-Route::post('/hasil-cek-status-permohonan', 'BlangkoController@cekPStatusResult')
-    ->name('permohonan.cek-status.result');
+Route::post('/hasil-cek-status-permohonan', 'BlangkoController@resultCheckPermohonan')
+    ->name('permohonan.result');
 
-Route::middleware('web')->group(function () {
+Route::get('/rekapitulasi-permohonan-informasi', 'BlangkoController@recapPermohonan')->name('recap.grafik_permohonan');
 
-    Route::get('/cari-permohonan', 'BlangkoController@formCariP')
-        ->name('permohonan.cari');
+Route::get('/rekapitulasi-permohonan-informasi/data/{year}', 'BlangkoController@getTahunPermohonan')->name('recap.tahun_permohonan');
 
-    Route::post('/hasil-cari-permohonan', 'BlangkoController@cariPermohonan')
-        ->name('permohonan.hasil-cari');
+// Route::middleware('web')->group(function () {
 
-    Route::post('/kirim-pernyataan-keberatan', 'BlangkoController@keberatanSubmit')->name('keberatan.store');
+Route::get('/cari-permohonan', 'BlangkoController@searchPermohonan')
+    ->name('permohonan.search');
 
-    Route::get('/pernyataan-keberatan/sukses/{unik_request}', 'BlangkoController@keberatanSukses')->name('keberatan.sukses');
+Route::post('/hasil-cari-permohonan', 'BlangkoController@resultSearchPermohonan')
+    ->name('permohonan.result_search');
 
-    Route::get('/pernyataan-keberatan/download/{unik_request}', 'BlangkoController@downloadKeberatan')->name('keberatan.download');
+Route::post('/kirim-pernyataan-keberatan', 'BlangkoController@storeKeberatan')->name('keberatan.store');
 
-    Route::get('/cek-status-keberatan', 'BlangkoController@cekKStatus')
-        ->name('keberatan.cek-status');
+Route::get('/pernyataan-keberatan/sukses/{unik_request}', 'BlangkoController@successKeberatan')->name('keberatan.success');
 
-    Route::post('/hasil-cek-status-keberatan', 'BlangkoController@cekKStatusResult')
-        ->name('keberatan.cek-status.result');
+Route::get('/pernyataan-keberatan/download/{unik_request}', 'BlangkoController@downloadKeberatan')->name('keberatan.download');
 
-    Route::get('/rekapitulasi-pernyataan-keberatan', 'BlangkoController@rekapKeberatan')->name('rekap.grafik_keberatan');
+Route::get('/cek-status-keberatan', 'BlangkoController@checkKeberatan')
+    ->name('keberatan.check');
 
-    Route::get('/rekapitulasi-pernyataan-keberatan/data/{year}', 'BlangkoController@getDataKeberatan')->name('rekap.data_keberatan');
-});
+Route::post('/hasil-cek-status-keberatan', 'BlangkoController@resultCheckKeberatan')
+    ->name('keberatan.result');
+
+Route::get('/rekapitulasi-pernyataan-keberatan', 'BlangkoController@recapKeberatan')->name('rekap.grafik_keberatan');
+
+Route::get('/rekapitulasi-pernyataan-keberatan/data/{year}', 'BlangkoController@getTahunKeberatan')->name('rekap.tahun_keberatan');
+// });
 Route::get('/', 'PageController@index')
     ->name('beranda');
 
@@ -63,14 +63,14 @@ Route::post('/contact-response', 'PageController@contact_response')
 Route::get('/faq', 'PageController@faq')
     ->name('faq');
 
-Route::get('/komentar', 'PageController@komentar')
-    ->name('komentar');
+Route::get('/komentar', 'PageController@comment')
+    ->name('comment');
 
 Route::get('/cari-berita', 'PageController@search_news')
-    ->name('search_news');
+    ->name('search.news');
 
 Route::get('/cari-pengumuman', 'PageController@search_announce')
-    ->name('search_announce');
+    ->name('search.announce');
 
 Route::get('/clear-cache', 'PageController@clear_cache')
     ->name('clear_cache');
@@ -90,9 +90,9 @@ Route::get('/{category}/{article_slug}', 'PageController@news_detail')
 Route::any('core/elfinder/connector', 'ElfinderController@showConnector')
     ->name('core.elfinder.connector');
 
-Route::post('/kirim_komentar', 'KomentarController@store')->name('komentar.store');
+Route::post('/kirim-komentar', 'KomentarController@store')->name('comment.submit');
 
-Route::get('/berita/tag/{slug}', 'PageController@tag')->name('tag.filter');
+Route::get('/berita/tag/{slug}', 'PageController@tag_news')->name('tag.filter_news');
 
 Route::get('/pengumuman/tag/{slug}', 'PageController@tag_announce')->name('tag.filter_announce');
 

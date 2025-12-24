@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Komentar;
+use App\Models\Comment;
 
 class KomentarController extends Controller
 {
-   public function store(Request $request)
+    public function store(Request $request)
     {
         try {
             $request->validate([
@@ -18,7 +18,7 @@ class KomentarController extends Controller
             ]);
 
             // Create and save the comment
-            Komentar::create($request->all());
+            Comment::create($request->all());
 
             return response()->json([
                 'status' => 'success',
@@ -36,7 +36,7 @@ class KomentarController extends Controller
             ], 422); // Kode status 422 Unprocessable Entity
         } catch (\Exception $e) {
             // Tangani exception lain yang mungkin terjadi (misal error database)
-             return response()->json([
+            return response()->json([
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan saat menyimpan komentar!'
             ], 500); // Kode status 500 Internal Server Error

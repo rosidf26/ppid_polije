@@ -176,6 +176,10 @@
             <div class="label">Respon:</div>
             <p>{{ isset($data->respon) && trim($data->respon) !== '' ? $data->respon : '-' }}</p>
         @endif
+
+        @if($data->permohonan)
+            <p>{{ $data->permohonan->unik_request }}</p>
+        @endif
     </div>
 
     <div class="footer">

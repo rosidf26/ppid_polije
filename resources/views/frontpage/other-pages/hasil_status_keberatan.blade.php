@@ -12,7 +12,7 @@
 
         <div role="main" class="main">
 
-            @include('frontpage.sections.page_header')
+            @include('frontpage.sections.page_title')
 
             <div class="container py-4">
 
@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="card-footer text-center bg-white">
-                                <a href="{{ route('keberatan.cek-status') }}" class="btn btn-outline-info btn-sm">
+                                <a href="{{ route('keberatan.check') }}" class="btn btn-outline-info btn-sm">
                                     <i class="fa fa-search"></i>
                                     Cek Permohonan Lain
                                 </a>

@@ -17,45 +17,9 @@ use Illuminate\Support\Facades\Storage;
 
 class BlangkoController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function index($slug = null)
-    // {
-    //     // Normalisasi slug biar aman (lowercase)
-    //     $slug = strtolower($slug);
 
-    //     switch ($slug) {
-    //         case 'permohonan-informasi':
-    //             return view('frontpage.page-templates.permintaan_informasi');  // VIEW A
 
-    //         case 'pernyataan-keberatan':
-    //             return view('frontpage.page-templates.pernyataan_keberatan');  // VIEW B
-
-    //         default:
-    //             abort(404);  // Jika slug tidak dikenali
-    //     }
-    // }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function permohonanSubmit(PermohonanInformasiRequest $request)
+    public function storePermohonan(PermohonanInformasiRequest $request)
     {
         $data = $request->validated();
 
@@ -96,7 +60,7 @@ class BlangkoController extends Controller
             DB::commit();
 
             return redirect()->route(
-                'permohonan.sukses',
+                'permohonan.success',
                 $data['unik_request']
             );
 
@@ -119,7 +83,7 @@ class BlangkoController extends Controller
         }
     }
 
-    public function permohonanSukses($unik_request)
+    public function successPermohonan($unik_request)
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -131,7 +95,7 @@ class BlangkoController extends Controller
 
         $data = PermohonanInformasi::where('unik_request', $unik_request)->firstOrFail();
 
-        return view('frontpage.page-templates.permohonan_sukses')
+        return view('frontpage.other-pages.permohonan_sukses')
             ->with("menus", $menus)
             ->with("data", $data)
             ->with("settings", $settings);
@@ -153,7 +117,7 @@ class BlangkoController extends Controller
     /**
      * FORM CEK STATUS PERMOHONAN
      */
-    public function cekPStatus()
+    public function checkPermohonan()
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -162,7 +126,7 @@ class BlangkoController extends Controller
         foreach ($data_settings as $index => $value) {
             $settings[$value->key] = $value;
         }
-        return view('frontpage.page-templates.cek_status_permohonan')
+        return view('frontpage.other-pages.cek_status_permohonan')
             ->with("menus", $menus)
             ->with("settings", $settings);
         ;
@@ -171,7 +135,7 @@ class BlangkoController extends Controller
     /**
      * HASIL CEK STATUS
      */
-    public function cekPStatusResult(Request $request)
+    public function resultCheckPermohonan(Request $request)
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -196,14 +160,14 @@ class BlangkoController extends Controller
             ]);
         }
 
-        return view('frontpage.page-templates.result_status_permohonan')
+        return view('frontpage.other-pages.hasil_status_permohonan')
             ->with("menus", $menus)
             ->with("data", $data)
             ->with("settings", $settings);
     }
 
 
-    public function formCariP()
+    public function searchPermohonan()
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -212,13 +176,13 @@ class BlangkoController extends Controller
         foreach ($data_settings as $index => $value) {
             $settings[$value->key] = $value;
         }
-        return view('frontpage.page-templates.cari_permohonan')
+        return view('frontpage.other-pages.cari_permohonan')
             ->with("menus", $menus)
             ->with("settings", $settings);
         ;
     }
 
-    public function cariPermohonan(Request $request)
+    public function resultSearchPermohonan(Request $request)
     {
         $request->validate([
             'unik_request' => 'required|string',
@@ -260,7 +224,7 @@ class BlangkoController extends Controller
         return redirect('/e-blangko-pernyataan-keberatan');
     }
 
-    public function keberatanSubmit(PernyataanKeberatanRequest $request)
+    public function storeKeberatan(PernyataanKeberatanRequest $request)
     {
         try {
             // 🔐 ambil dari session (SUMBER UTAMA)
@@ -280,6 +244,7 @@ class BlangkoController extends Controller
 
             // cegah double submit
             if (PernyataanKeberatan::where('permohonan_id', $permohonanId)->exists()) {
+                session()->forget('permohonan_keberatan_id');
                 return back()->withErrors(['db_error' => 'Permohonan ini sudah diajukan keberatan.']);
             }
 
@@ -304,7 +269,7 @@ class BlangkoController extends Controller
             session()->forget('permohonan_keberatan_id');
 
             return redirect()->route(
-                'keberatan.sukses',
+                'keberatan.success',
                 $data['unik_request']
             );
 
@@ -318,7 +283,7 @@ class BlangkoController extends Controller
         }
     }
 
-    public function keberatanSukses($unik_request)
+    public function successKeberatan($unik_request)
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -330,7 +295,7 @@ class BlangkoController extends Controller
 
         $data = PernyataanKeberatan::where('unik_request', $unik_request)->firstOrFail();
 
-        return view('frontpage.page-templates.keberatan_sukses')
+        return view('frontpage.other-pages.keberatan_sukses')
             ->with("menus", $menus)
             ->with("data", $data)
             ->with("settings", $settings);
@@ -338,7 +303,10 @@ class BlangkoController extends Controller
 
     public function downloadKeberatan($unik_request)
     {
-        $data = PernyataanKeberatan::where('unik_request', $unik_request)->firstOrFail();
+        $data = PernyataanKeberatan::with('permohonan')
+            ->where('unik_request', $unik_request)
+            ->first();
+        // $data = PernyataanKeberatan::where('unik_request', $unik_request)->firstOrFail();
 
         $view = 'pdf.keberatan';
 
@@ -350,7 +318,7 @@ class BlangkoController extends Controller
     /**
      * FORM CEK STATUS KEBERATAN
      */
-    public function cekKStatus()
+    public function checkKeberatan()
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -359,7 +327,7 @@ class BlangkoController extends Controller
         foreach ($data_settings as $index => $value) {
             $settings[$value->key] = $value;
         }
-        return view('frontpage.page-templates.cek_status_keberatan')
+        return view('frontpage.other-pages.cek_status_keberatan')
             ->with("menus", $menus)
             ->with("settings", $settings);
         ;
@@ -368,7 +336,7 @@ class BlangkoController extends Controller
     /**
      * HASIL CEK STATUS
      */
-    public function cekKStatusResult(Request $request)
+    public function resultCheckKeberatan(Request $request)
     {
         $menus = $this->create_tree();
 
@@ -398,7 +366,7 @@ class BlangkoController extends Controller
             ]);
         }
 
-        return view('frontpage.page-templates.result_status_keberatan', [
+        return view('frontpage.other-pages.hasil_status_keberatan', [
             'menus' => $menus,
             'settings' => $settings,
             'data' => $data,              // data keberatan
@@ -407,7 +375,7 @@ class BlangkoController extends Controller
     }
 
 
-    public function rekap(Request $request)
+    public function recapPermohonan(Request $request)
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -472,7 +440,7 @@ class BlangkoController extends Controller
             $chart_ditolak[] = $data->ditolak ?? 0;
         }
 
-        return view("frontpage.rekapitulasi")
+        return view("frontpage.other-pages.rekapitulasi_permohonan")
             ->with("menus", $menus)
             ->with("tahun", $tahun)
             ->with("rekap", $rekap)
@@ -485,7 +453,7 @@ class BlangkoController extends Controller
             ->with("settings", $settings);
     }
 
-    public function rekapKeberatan(Request $request)
+    public function recapKeberatan(Request $request)
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -575,7 +543,7 @@ class BlangkoController extends Controller
         /* =========================================================
          * 5️⃣ Return View
          * ========================================================= */
-        return view('frontpage.rekap_keberatan')
+        return view('frontpage.other-pages.rekapitulasi_keberatan')
             ->with('menus', $menus)
             ->with('settings', $settings)
             ->with("rekap", $rekapBulanan)
@@ -590,7 +558,7 @@ class BlangkoController extends Controller
             ->with('persentaseKeberatan', $persentaseKeberatan);
     }
 
-    public function getData($year)
+    public function getTahunPermohonan($year)
     {
         // per bulan
         $perBulan = PermohonanInformasi::select(
@@ -626,7 +594,7 @@ class BlangkoController extends Controller
         ]);
     }
 
-    public function getDataKeberatan($year)
+    public function getTahunKeberatan($year)
     {
         // ===============================
         // 1. Jumlah keberatan per bulan
@@ -795,37 +763,4 @@ class BlangkoController extends Controller
         return $html;
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }

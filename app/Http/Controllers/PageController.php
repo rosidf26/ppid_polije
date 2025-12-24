@@ -6,7 +6,7 @@ use App\Models\Faq;
 use App\Models\Slideshow;
 use App\Models\Stakeholder;
 use App\Models\PermohonanInformasi;
-use App\Models\PernyataanKeberatan;
+// use App\Models\PernyataanKeberatan;
 use Backpack\MenuCRUD\app\Models\MenuItem;
 use Backpack\NewsCRUD\app\Models\Tag;
 use Backpack\NewsCRUD\app\Models\Article;
@@ -57,11 +57,6 @@ class PageController extends Controller
             ->limit($limit_announcement)
             ->get();
 
-
-        // $data_frontpages = Page::where('template', '=', 'frontpage')
-        //     ->orderBy('extras', 'ASC')
-        //     ->get();
-
         $data_pages = Page::where('template', '=', 'informasi_publik')
             ->orWhere('template', '=', 'statistik')
             ->get();
@@ -70,14 +65,8 @@ class PageController extends Controller
         $data_settings = Setting::all();
         $stakeholders = Stakeholder::all();
 
-        // $frontpage = array();
         $settings = array();
         $informasipublik = array();
-        // $statistik = array();
-
-        // foreach ($data_frontpages as $index => $value) {
-        //     $frontpage[$value->slug] = $value;
-        // }
 
         foreach ($data_settings as $index => $value) {
             $settings[$value->key] = $value;
@@ -87,9 +76,6 @@ class PageController extends Controller
             if ($value->template == 'informasi_publik')
                 $informasipublik[$value->slug] = $value;
 
-
-            // if ($value->template == 'statistik')
-            //     $statistik[$value->slug] = $value;
         }
 
         // ============================================================
@@ -131,12 +117,10 @@ class PageController extends Controller
 
 
         return view('frontpage.index')
-            // ->with('frontpage', $frontpage)
             ->with('menus', $menus)
             ->with('settings', $settings)
             ->with('slideshows', $slideshows)
             ->with('informasi_publik', $informasipublik)
-            // ->with('statistik', $statistik)
             ->with('stakeholders', $stakeholders)
             ->with('news', $news)
             ->with('pengumuman', $announcement)
@@ -152,14 +136,6 @@ class PageController extends Controller
         $menus = $this->create_tree();
         $data_settings = Setting::all();
 
-        // $featured_news = Article::with(['category'])
-        //     ->where('category_id', '=', 5)
-        //     ->where('featured', '=', '1')
-        //     ->orderBy('date', 'DESC')
-        //     ->orderBy('id', 'DESC')
-        //     ->limit(3)
-        //     ->get();
-
         $settings = array();
 
         foreach ($data_settings as $index => $value) {
@@ -167,7 +143,6 @@ class PageController extends Controller
         }
 
         switch ($page->template) {
-
 
             case "informasi_publik":
                 $page_extra = collect();
@@ -177,18 +152,13 @@ class PageController extends Controller
                     }
                 }
 
-                if (View::exists('frontpage.page-templates.' . 'info_publik'))
-                    return view('frontpage.page-templates.' . 'info_publik')
+                if (View::exists('frontpage.page-templates.' . 'informasi_publik'))
+                    return view('frontpage.page-templates.' . 'informasi_publik')
                         ->with('menus', $menus)
                         ->with('page', $page)
                         ->with('page_extra', $page_extra)
                         ->with('settings', $settings);
 
-            // return view('frontpage.page-templates.info_publik')
-            //     ->with('menus', $menus)
-            //     ->with('page', $page)
-            //     ->with('page_extra', $page_extra)
-            //     ->with('settings', $settings);
             case "tentang_polije":
                 $page_extra = collect();
                 if (is_array($page->extras)) {
@@ -242,8 +212,8 @@ class PageController extends Controller
                     }
                 }
 
-                if (View::exists('frontpage.page-templates.' . 'layanan_info'))
-                    return view('frontpage.page-templates.' . 'layanan_info')
+                if (View::exists('frontpage.page-templates.' . 'layanan_informasi'))
+                    return view('frontpage.page-templates.' . 'layanan_informasi')
                         ->with('menus', $menus)
                         ->with('page', $page)
                         ->with('page_extra', $page_extra)
@@ -257,6 +227,10 @@ class PageController extends Controller
                         $page_extra->put($index, $value);
                     }
                 }
+
+                // ✅ Inisialisasi default
+                $permohonan = null;
+                $alasan_keberatan = null;
 
                 // Tentukan view berdasarkan slug
                 $slug = $page->slug;
@@ -282,7 +256,7 @@ class PageController extends Controller
                     $view = "frontpage.page-templates.pernyataan_keberatan";
                 } else {
                     // default jika slug tidak dikenali
-                    $view = "frontpage.page-templates.e_blangko";
+                    $view = "frontpage.page";
                 }
 
                 if (View::exists($view)) {
@@ -299,7 +273,6 @@ class PageController extends Controller
             default:
                 if (View::exists('frontpage.' . 'page'))
                     return view('frontpage.' . 'page')
-                        // ->with('featured_news', $featured_news)
                         ->with('menus', $menus)
                         ->with('page', $page)
                         ->with('settings', $settings);
@@ -329,7 +302,7 @@ class PageController extends Controller
         if ($slug == '') {
             $category = Category::whereIn('slug', ['berita', 'pengumuman'])->get();
 
-            return view('jurusan.templates.kategori')
+            return view('frontpage.other-pages.kategori')
                 ->with('category', $category)
                 ->with('menus', $menus)
                 ->with('settings', $settings);
@@ -366,7 +339,7 @@ class PageController extends Controller
             // MEMANGGIL HELPER RELASI TAG + ARTIKEL
             $all_tags = berita_tags();
 
-            return view('frontpage.page-templates.berita')
+            return view('frontpage.other-pages.berita')
                 ->with('articles', $articles)
                 ->with('all_tags', $all_tags)
                 ->with('menus', $menus)
@@ -378,7 +351,7 @@ class PageController extends Controller
 
             $all_tags = pengumuman_tags();
 
-            return view('frontpage.page-templates.pengumuman')
+            return view('frontpage.other-pages.pengumuman')
                 ->with('articles', $articles)
                 ->with('all_tags', $all_tags)
                 ->with('menus', $menus)
@@ -423,7 +396,7 @@ class PageController extends Controller
 
                 $all_tags = berita_tags();
 
-                return view('frontpage.page-templates.detail_berita')
+                return view('frontpage.other-pages.detail_berita')
                     ->with('categories', $categories)
                     ->with('news', $news)
                     ->with('all_tags', $all_tags)
@@ -444,7 +417,7 @@ class PageController extends Controller
 
                 $all_tags = pengumuman_tags();
 
-                return view('frontpage.page-templates.detail_pengumuman')
+                return view('frontpage.other-pages.detail_pengumuman')
                     ->with('categories', $categories)
                     ->with('news', $news)
                     ->with('all_tags', $all_tags)
@@ -458,7 +431,7 @@ class PageController extends Controller
         }
     }
 
-    public function tag($slug)
+    public function tag_news($slug)
     {
         // LOAD SETTINGS
         $data_settings = Setting::all();
@@ -487,7 +460,7 @@ class PageController extends Controller
         // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
         $all_tags = berita_tags();
 
-        return view('frontpage.page-templates.tag')
+        return view('frontpage.other-pages.tag')
             ->with('articles', $articles)
             ->with('tag', $tag)
             ->with('all_tags', $all_tags)
@@ -524,7 +497,7 @@ class PageController extends Controller
         // SEMUA TAG + JUMLAH ARTIKEL, URUT BERDASARKAN ID
         $all_tags = pengumuman_tags();
 
-        return view('frontpage.page-templates.tag_pengumuman')
+        return view('frontpage.other-pages.tag_pengumuman')
             ->with('articles', $articles)
             ->with('tag', $tag)
             ->with('all_tags', $all_tags)
@@ -549,8 +522,8 @@ class PageController extends Controller
             $settings[$value->key] = $value;
         }
 
-        if (View::exists('frontpage.page-templates.hasil_cari')) {
-            return view('frontpage.page-templates.hasil_cari')
+        if (View::exists('frontpage.other-pages.hasil_cari_berita')) {
+            return view('frontpage.other-pages.hasil_cari_berita')
                 ->with('request', $request)
                 ->with('article', $article)
                 ->with('settings', $settings)
@@ -575,8 +548,8 @@ class PageController extends Controller
             $settings[$value->key] = $value;
         }
 
-        if (View::exists('frontpage.page-templates.hasil_cari_announce')) {
-            return view('frontpage.page-templates.hasil_cari_announce')
+        if (View::exists('frontpage.other-pages.hasil_cari_pengumuman')) {
+            return view('frontpage.other-pages.hasil_cari_pengumuman')
                 ->with('request', $request)
                 ->with('article', $article)
                 ->with('settings', $settings)
@@ -595,8 +568,8 @@ class PageController extends Controller
             $settings[$value->key] = $value;
         }
 
-        if (View::exists('frontpage.page-templates.' . 'faq')) {
-            return view('frontpage.page-templates.' . 'faq')
+        if (View::exists('frontpage.other-pages.' . 'faq')) {
+            return view('frontpage.other-pages.' . 'faq')
                 ->with('menus', $menus)
                 ->with('settings', $settings)
                 ->with('faq', $faq);
@@ -604,7 +577,7 @@ class PageController extends Controller
             return Redirect::route('beranda');
     }
 
-    public function komentar()
+    public function comment()
     {
         $menus = $this->create_tree();
         $data_settings = Setting::all();
@@ -613,8 +586,8 @@ class PageController extends Controller
             $settings[$value->key] = $value;
         }
 
-        if (View::exists('frontpage.' . 'kirim_komentar')) {
-            return view('frontpage.' . 'kirim_komentar')
+        if (View::exists('frontpage.other-pages.' . 'komentar')) {
+            return view('frontpage.other-pages.' . 'komentar')
                 ->with('menus', $menus)
                 ->with('settings', $settings);
         } else

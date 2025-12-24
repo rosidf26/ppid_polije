@@ -19,6 +19,12 @@ class Comment extends Model
     // protected $primaryKey = 'id';
     // public $timestamps = false;
     protected $guarded = ['id'];
+    protected $fillable = [
+        'name',
+        'email',
+        'subject',
+        'message',
+    ];
     // protected $fillable = [];
     // protected $hidden = [];
     // protected $dates = [];

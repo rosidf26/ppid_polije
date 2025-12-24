@@ -12,7 +12,7 @@
 
         <div role="main" class="main">
 
-            @include('frontpage.sections.page_header')
+            @include('frontpage.sections.page_title')
 
             <div class="container py-4">
 
@@ -53,9 +53,9 @@
                                 </div>
 
 
-                                <table class="table table-sm table-bordered table-striped mb-0">
+                                @if ($data->sudahDirespon())
                                     <hr>
-                                    @if ($data->sudahDirespon())
+                                    <table class="table table-sm table-bordered table-striped mb-0">
                                         <tr>
                                             <th>Tanggal Pengajuan</th>
                                             <td>{{ tgl_indo($data->tgl_pengajuan) }}</td>
@@ -75,12 +75,12 @@
                                             <th>Respon</th>
                                             <td>{{ $data->respon }}</td>
                                         </tr>
-                                    @endif
-                                </table>
+                                    </table>
+                                @endif
                             </div>
 
                             <div class="card-footer text-center bg-white">
-                                <a href="{{ route('permohonan.cek-status') }}" class="btn btn-outline-info btn-sm">
+                                <a href="{{ route('permohonan.check') }}" class="btn btn-outline-info btn-sm">
                                     <i class="fa fa-search"></i>
                                     Cek Permohonan Lain
                                 </a>

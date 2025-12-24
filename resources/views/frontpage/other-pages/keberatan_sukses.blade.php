@@ -15,7 +15,7 @@
         <div role="main" class="main">
 
             <!-- ini header -->
-            @include('frontpage.sections.page_header')
+            @include('frontpage.sections.page_title')
 
             <div class="container py-4">
 
