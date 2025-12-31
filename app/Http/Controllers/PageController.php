@@ -82,38 +82,58 @@ class PageController extends Controller
         //   🔥 Tambahkan Bagian Statistik Google Sheets di sini
         // ============================================================
 
-        $client = new \Google\Client();
-        $client->setAuthConfig(storage_path('app/google/credentials.json'));
-        $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
+        // $client = new \Google\Client();
+        // $client->setAuthConfig(storage_path('app/google/credentials.json'));
+        // $client->addScope(\Google\Service\Sheets::SPREADSHEETS_READONLY);
 
-        $service = new \Google\Service\Sheets($client);
+        // $service = new \Google\Service\Sheets($client);
 
-        $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
-        $range = 'PermohonanInformasi!A:D';
+        // $spreadsheetId = '1IaugIjjFJH3sTQH8vU09SFq---8W_7NyroiYr9HUWgQ';
+        // $range = 'PermohonanInformasi!A:D';
 
-        $response = $service->spreadsheets_values->get($spreadsheetId, $range);
-        $rows = $response->getValues();
+        // $response = $service->spreadsheets_values->get($spreadsheetId, $range);
+        // $rows = $response->getValues();
 
-        array_shift($rows); // Hapus header
+        //array_shift($rows); // Hapus header
 
         // Kolom D = status permohonan (index 3)
-        $statusA = 'diterima';
-        $statusB = 'ditolak';
+        // $statusA = 'diterima';
+        // $statusB = 'ditolak';
 
-        $countA = collect($rows)->filter(function ($row) use ($statusA) {
-            return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
-        })->count();
+        // $countA = collect($rows)->filter(function ($row) use ($statusA) {
+        //     return isset($row[3]) && strtolower($row[3]) == strtolower($statusA);
+        // })->count();
 
-        $countB = collect($rows)->filter(function ($row) use ($statusB) {
-            return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
-        })->count();
+        // $countB = collect($rows)->filter(function ($row) use ($statusB) {
+        //     return isset($row[3]) && strtolower($row[3]) == strtolower($statusB);
+        // })->count();
 
-        $total = count($rows);
+        // $total = count($rows);
 
 
         // ============================================================
         //      🔥 Kirim variabel statistik ke view index
         // ============================================================
+
+        // ===============================
+        // DATA COUNTER PERMOHONAN
+        // ===============================
+        $bulan = now()->month;
+        $tahun = now()->year;
+
+        $total = PermohonanInformasi::whereMonth('tgl_pengajuan', $bulan)
+            ->whereYear('tgl_pengajuan', $tahun)
+            ->count();
+
+        $countA = PermohonanInformasi::where('status', 'diterima')
+            ->whereMonth('tgl_pengajuan', $bulan)
+            ->whereYear('tgl_pengajuan', $tahun)
+            ->count();
+
+        $countB = PermohonanInformasi::where('status', 'ditolak')
+            ->whereMonth('tgl_pengajuan', $bulan)
+            ->whereYear('tgl_pengajuan', $tahun)
+            ->count();
 
 
         return view('frontpage.index')

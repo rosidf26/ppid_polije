@@ -34,21 +34,25 @@ class ArticleCrudController extends CrudController
         |--------------------------------------------------------------------------
         */
         $this->crud->operation('list', function () {
-            $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
-            $this->crud->addColumn('title');
+            $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'end');
+            $this->crud->addColumn([
+                'name' => 'title',
+                'label' => 'Judul',
+                'type' => 'text',
+            ]);
             $this->crud->addColumn([
                 'name' => 'date',
-                'label' => 'Date',
+                'label' => 'Tanggal',
                 'type' => 'date',
             ]);
             $this->crud->addColumn('status');
             $this->crud->addColumn([
                 'name' => 'featured',
-                'label' => 'Featured',
+                'label' => 'Unggulan',
                 'type' => 'check',
             ]);
             $this->crud->addColumn([
-                'label' => 'Category',
+                'label' => 'Kategori',
                 'type' => 'select',
                 'name' => 'category_id',
                 'entity' => 'category',

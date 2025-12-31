@@ -65,19 +65,19 @@ class UserCrudController extends CrudController
         CRUD::setValidation(UserRequest::class);
 
         // CRUD::setFromDb(); // fields
-         $this->crud->addField([    // Image
+        $this->crud->addField([    // Image
             'name' => 'name',
             'label' => 'Namea',
             'type' => 'text',
         ]);
 
-         $this->crud->addField([    // Image
+        $this->crud->addField([    // Image
             'name' => 'email',
             'label' => 'Emails',
             'type' => 'email',
         ]);
 
-         $this->crud->addField([    // Image
+        $this->crud->addField([    // Image
             'name' => 'password',
             'label' => 'pass',
             'type' => 'password',

@@ -325,15 +325,16 @@ class PermohonanInformasiCrudController extends CrudController
         $this->crud->addColumn(['name' => 'alasan_butuh', 'label' => 'Alasan Butuh', 'type' => 'null_fallback']);
         $this->crud->addColumn(['name' => 'sumber_info', 'label' => 'Sumber Informasi', 'type' => 'null_fallback']);
         $this->crud->addColumn(['name' => 'alamat_info', 'label' => 'Alamat Informasi', 'type' => 'null_fallback']);
-        $this->crud->addColumn(['name' => 'respon', 'label' => 'Respon', 'type' => 'null_fallback']);
+
         $this->crud->addColumn(['name' => 'tgl_pengajuan_display', 'label' => 'Tanggal Pengajuan', 'type' => 'null_fallback']);
-        $this->crud->addColumn(['name' => 'tgl_direspon_display', 'label' => 'Tanggal Direspon', 'type' => 'null_fallback']);
-        $this->crud->addColumn(['name' => 'rerata_display', 'label' => 'Waktu Respon', 'type' => 'null_fallback']);
 
 
         $this->crud->addButtonFromView('line', 'back_button', 'back_button', 'beginning');
 
         if ($entry->status !== 'belum direspon') {
+            $this->crud->addColumn(['name' => 'tgl_direspon_display', 'label' => 'Tanggal Direspon', 'type' => 'null_fallback']);
+            $this->crud->addColumn(['name' => 'rerata_display', 'label' => 'Waktu Respon', 'type' => 'null_fallback']);
+            $this->crud->addColumn(['name' => 'respon', 'label' => 'Respon PPID', 'type' => 'null_fallback']);
             $this->crud->addButtonFromView('line', 'export_pdf', 'export_pdf', 'beginning');
         }
 

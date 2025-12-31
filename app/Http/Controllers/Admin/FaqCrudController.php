@@ -6,11 +6,11 @@ use App\Http\Requests\FaqRequest;
 use App\Models\Faq;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
+use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -21,7 +21,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 class FaqCrudController extends CrudController
 {
-    
+
     use ListOperation;
     use CreateOperation;
     use UpdateOperation;
@@ -37,9 +37,9 @@ class FaqCrudController extends CrudController
 
     protected function setupListOperation()
     {
-        CRUD::addColumn(['name' => 'question', 'label' => 'Question']);
-        CRUD::addColumn(['name' => 'answer', 'label' => 'Answer']);
-        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
+        CRUD::addColumn(['name' => 'question', 'label' => 'Pertanyaan']);
+        CRUD::addColumn(['name' => 'answer', 'label' => 'Jawaban']);
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'end');
     }
 
     protected function setupCreateOperation()

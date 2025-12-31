@@ -186,7 +186,7 @@
 
         @if ($sudahDirespon)
             <hr>
-            <div class="label">Respon:</div>
+            <div class="label">Respon PPID:</div>
             <p>{{ isset($data->respon) && trim($data->respon) !== '' ? $data->respon : '-' }}</p>
         @endif
     </div>

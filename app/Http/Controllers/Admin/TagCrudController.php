@@ -23,7 +23,7 @@ class TagCrudController extends CrudController
 
     protected function setupListOperation()
     {
-        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'end');
     }
 
     protected function setupCreateOperation()

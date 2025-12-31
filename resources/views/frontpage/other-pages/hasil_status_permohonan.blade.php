@@ -72,7 +72,7 @@
                                         </tr>
 
                                         <tr>
-                                            <th>Respon</th>
+                                            <th>Respon PPID</th>
                                             <td>{{ $data->respon }}</td>
                                         </tr>
                                     </table>

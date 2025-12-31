@@ -144,10 +144,17 @@
                                         </p>
                                     </div>
 
-                                    <div>
+                                    <div class="mb-2">
                                         <strong>Alasan Permohonan</strong>
                                         <p class="mb-0">
                                             {{ $data->permohonan->alasan_butuh }}
+                                        </p>
+                                    </div>
+
+                                    <div>
+                                        <strong>Respon PPID</strong>
+                                        <p class="mb-0">
+                                            {{ $data->permohonan->respon }}
                                         </p>
                                     </div>
 

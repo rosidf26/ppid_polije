@@ -1,10 +1,10 @@
 @php
-	$baseUrl = url(config('backpack.base.route_prefix', 'admin') . '/permohonan-informasi');
+	$baseUrl = url(config('backpack.base.route_prefix', 'admin') . '/pernyataan-keberatan');
 @endphp
 
 {{-- TOMBOL HANYA MUNCUL JIKA STATUS MASIH BELUM DIRESPON --}}
 @if ($entry->status === 'belum direspon')
-	<button class="btn btn-xs btn-warning update-status-btn" data-id="{{ $entry->getKey() }}">
+	<button class="btn btn-xs btn-warning update-keberatan-btn" data-id="{{ $entry->getKey() }}">
 		<i class="la la-check"></i> Update Status
 	</button>
 @endif
@@ -25,7 +25,7 @@
 					</div>
 
 					<h4 class="font-weight-bold mb-3" style="color:#4a4a4a;">
-						Update Status Permohonan
+						Update Status Pernyataan Keberatan
 					</h4>
 
 					<div class="form-group text-left px-4">
@@ -86,7 +86,7 @@
 
 				let selectedId = null;
 
-				$(document).on('click', '.update-status-btn', function () {
+				$(document).on('click', '.update-keberatan-btn', function () {
 					selectedId = $(this).data('id');
 
 					$('#statusSelect').val("");
@@ -127,7 +127,7 @@
 					// }
 
 					$.ajax({
-						url: "{{ url(config('backpack.base.route_prefix') . '/permohonan-informasi') }}/" +
+						url: "{{ url(config('backpack.base.route_prefix') . '/pernyataan-keberatan') }}/" +
 							selectedId + "/update-status",
 						type: "POST",
 						data: {

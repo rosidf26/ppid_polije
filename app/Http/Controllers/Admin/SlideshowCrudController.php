@@ -6,11 +6,11 @@ use App\Http\Requests\SlideshowRequest;
 use App\Models\Slideshow;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-     use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
+use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -46,41 +46,41 @@ class SlideshowCrudController extends CrudController
      */
     protected function setupListOperation()
     {
-       $this->crud->addColumn([    // Image
+        $this->crud->addColumn([    // Image
             'name' => 'name',
-            'label' => 'Name',
+            'label' => 'Nama Slide',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
             'name' => 'title',
-            'label' => 'Title',
+            'label' => 'Judul',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
             'name' => 'description',
-            'label' => 'Description',
+            'label' => 'Keterangan',
             'type' => 'text',
         ]);
 
 
         $this->crud->addColumn([    // Image
-            'name' => 'image',
-            'label' => 'Image',
-            'type' => 'image',
-        ]);
-
-        $this->crud->addColumn([    // Image
             'name' => 'type',
-            'label' => 'Type',
+            'label' => 'Tipe Link',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
             'name' => 'advanced_mode',
-            'label' => 'Advanced Mode',
-            'type'  => 'boolean',
+            'label' => 'Mode Lanjut',
+            'type' => 'boolean',
+        ]);
+
+        $this->crud->addColumn([    // Image
+            'name' => 'image',
+            'label' => 'Gambar',
+            'type' => 'image',
         ]);
 
         /**
@@ -88,7 +88,7 @@ class SlideshowCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
-        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'end');
     }
 
     /**
@@ -103,31 +103,31 @@ class SlideshowCrudController extends CrudController
 
         $this->crud->addField([    // Image
             'name' => 'name',
-            'label' => 'Name',
+            'label' => 'Nama Slide',
             'type' => 'text',
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'image',
-            'label' => 'Image',
+            'label' => 'Gambar',
             'type' => 'browse',
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'title',
-            'label' => 'Title',
+            'label' => 'Judul',
             'type' => 'text',
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'description',
-            'label' => 'Description',
+            'label' => 'Keterangan',
             'type' => 'textarea',
         ]);
 
         $this->crud->addField([
             'name' => ['type', 'link', 'page_id'],
-            'label' => 'Type',
+            'label' => 'Tipe Link',
             'type' => 'page_or_link',
             'page_model' => '\Backpack\PageManager\app\Models\Page',
         ]);
@@ -141,7 +141,7 @@ class SlideshowCrudController extends CrudController
 
         $this->crud->addField([    // Image
             'name' => 'order',
-            'label' => 'Order',
+            'label' => 'Urutan',
             'type' => 'number',
             'wrapperAttributes' => [
                 'class' => 'form-group col-md-3'

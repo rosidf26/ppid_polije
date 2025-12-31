@@ -172,12 +172,14 @@
         <p>{{ $data->kasus_posisi }}</p>
 
         @if ($sudahDirespon)
-            <hr>
-            <div class="label">Respon:</div>
+            <div class="label">Respon PPID:</div>
             <p>{{ isset($data->respon) && trim($data->respon) !== '' ? $data->respon : '-' }}</p>
         @endif
 
+        <hr>
+
         @if($data->permohonan)
+            <div class="label">Riwayat Permohonan Informasi:</div>
             <p>{{ $data->permohonan->unik_request }}</p>
         @endif
     </div>

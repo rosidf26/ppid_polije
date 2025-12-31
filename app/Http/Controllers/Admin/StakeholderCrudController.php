@@ -6,11 +6,11 @@ use App\Http\Requests\StakeholderRequest;
 use App\Models\Stakeholder;
 use Backpack\CRUD\app\Http\Controllers\CrudController;
 use \Backpack\CRUD\app\Http\Controllers\Operations\ListOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
-    use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
-    use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
+use \Backpack\CRUD\app\Http\Controllers\Operations\CreateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\UpdateOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\DeleteOperation;
+use \Backpack\CRUD\app\Http\Controllers\Operations\ShowOperation;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
 
 /**
@@ -48,33 +48,33 @@ class StakeholderCrudController extends CrudController
     {
         $this->crud->addColumn([    // Image
             'name' => 'name',
-            'label' => 'Name',
+            'label' => 'Nama Instansi',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
-            'name' => 'image',
-            'label' => 'Image',
-            'type' => 'image',
-            'prefix' =>  url('/') . '/'
-        ]);
-
-        $this->crud->addColumn([    // Image
             'name' => 'title',
-            'label' => 'Title',
+            'label' => 'Bidang',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
             'name' => 'description',
-            'label' => 'Description',
+            'label' => 'Keterangan',
             'type' => 'text',
         ]);
 
         $this->crud->addColumn([    // Image
             'name' => 'link',
-            'label' => 'URl',
+            'label' => 'Link',
             'type' => 'text',
+        ]);
+
+        $this->crud->addColumn([    // Image
+            'name' => 'image',
+            'label' => 'Logo',
+            'type' => 'image',
+            'prefix' => url('/') . '/'
         ]);
 
         /**
@@ -82,7 +82,7 @@ class StakeholderCrudController extends CrudController
          * - CRUD::column('price')->type('number');
          * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
          */
-        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
+        $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'end');
     }
 
     /**
@@ -97,46 +97,46 @@ class StakeholderCrudController extends CrudController
 
         $this->crud->addField([    // Image
             'name' => 'name',
-            'label' => 'Image Name',
+            'label' => 'Nama Instansi',
             'type' => 'text',
-            'wrapper'   => [
-                'class'      => 'form-group col-md-6'
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
             ]
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'image',
-            'label' => 'Upload File',
+            'label' => 'Logo',
             'type' => 'browse',
-            'wrapper'   => [
-                'class'      => 'form-group col-md-6'
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
             ],
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'title',
-            'label' => 'Title',
+            'label' => 'Bidang',
             'type' => 'text',
-            'wrapper'   => [
-                'class'      => 'form-group col-md-6'
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
             ],
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'link',
-            'label' => 'URl',
+            'label' => 'Link',
             'type' => 'url',
-            'wrapper'   => [
-                'class'      => 'form-group col-md-6'
+            'wrapper' => [
+                'class' => 'form-group col-md-6'
             ],
         ]);
 
         $this->crud->addField([    // Image
             'name' => 'description',
-            'label' => 'Description',
+            'label' => 'Keterangan',
             'type' => 'textarea',
-            'wrapper'   => [
-                'class'      => 'form-group col-md-12'
+            'wrapper' => [
+                'class' => 'form-group col-md-12'
             ],
         ]);
 

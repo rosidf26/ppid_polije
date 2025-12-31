@@ -32,7 +32,7 @@ class CommentCrudController extends CrudController
 
         CRUD::denyAccess('create');
 
-         // Hide the Update (Edit) button
+        // Hide the Update (Edit) button
         CRUD::denyAccess('update');
 
         // Hide the Delete button
@@ -51,7 +51,7 @@ class CommentCrudController extends CrudController
 
         $this->crud->addColumn([    // Image
             'name' => 'name',
-            'label' => 'Name',
+            'label' => 'Nama',
             'type' => 'text',
         ]);
 
@@ -84,7 +84,7 @@ class CommentCrudController extends CrudController
     protected function setupCreateOperation()
     {
         CRUD::setValidation(CommentRequest::class);
-    
+
         CRUD::field('id');
         CRUD::field('name');
         CRUD::field('email');

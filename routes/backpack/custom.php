@@ -22,10 +22,20 @@ Route::group([
         'PermohonanInformasiCrudController@updateStatus'
     )->name('permohonan.updateStatus');
 
+    Route::post(
+        'pernyataan-keberatan/{id}/update-status',
+        'PernyataankeberatanCrudController@updateStatus'
+    )->name('keberatan.updateStatus');
+
     Route::get(
         'permohonan-informasi/{id}/export-pdf',
         'PermohonanInformasiCrudController@exportPdf'
     )->name('permohonan.exportPdf');
+
+    Route::get(
+        'pernyataan-keberatan/{id}/export-pdf',
+        'PernyataankeberatanCrudController@exportPdf'
+    )->name('keberatan.exportPdf');
 
     Route::crud('user', 'UserCrudController');
     Route::crud('tag', 'TagCrudController');
@@ -36,6 +46,5 @@ Route::group([
     Route::crud('slideshow', 'SlideshowCrudController');
     Route::crud('comment', 'CommentCrudController');
     Route::crud('permohonan-informasi', 'PermohonanInformasiCrudController');
-
-
+    Route::crud('pernyataan-keberatan', 'PernyataankeberatanCrudController');
 }); // this should be the absolute last line of this file
