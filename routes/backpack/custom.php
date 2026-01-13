@@ -17,6 +17,10 @@ Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
 ], function () { // custom admin routes
 
+    Route::get('dashboard', 'DashboardController@index')
+        ->middleware('permission:lihat dashboard')
+        ->name('backpack.dashboard');
+
     Route::post(
         'permohonan-informasi/{id}/update-status',
         'PermohonanInformasiCrudController@updateStatus'
