@@ -1,6 +1,3 @@
-@php
-	$baseUrl = url(config('backpack.base.route_prefix', 'admin') . '/pernyataan-keberatan');
-@endphp
 
 {{-- TOMBOL HANYA MUNCUL JIKA STATUS MASIH BELUM DIRESPON --}}
 @if ($entry->status === 'belum direspon')

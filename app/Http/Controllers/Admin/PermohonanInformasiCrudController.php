@@ -116,11 +116,11 @@ class PermohonanInformasiCrudController extends CrudController
                 'element' => 'span',
                 'class' => function ($crud, $column, $entry) {
                     if ($entry->status === 'diterima') {
-                        return 'badge badge-success';   // hijau
+                        return 'badge badge-success';  // hijau
                     } else if ($entry->status === 'ditolak') {
                         return 'badge badge-danger';
                     }
-                    return 'badge badge-secondary';        // merah
+                    return 'badge badge-secondary';  // merah
                 },
             ],
         ]);
@@ -148,54 +148,10 @@ class PermohonanInformasiCrudController extends CrudController
             $this->crud->addClause('where', 'status', $value);
         });
 
-        $this->crud->addButtonFromView('line', 'update_status_btn', 'update_status', 'beginning');
+        // $this->crud->addButtonFromView('line', 'update_permohonan_btn', 'update_permohonan', 'beginning');
         $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
 
-        /**
-         * Columns can be defined using the fluent syntax or array syntax:
-         * - CRUD::column('price')->type('number');
-         * - CRUD::addColumn(['name' => 'price', 'type' => 'number']); 
-         */
     }
-
-    /**
-     * Define what happens when the Create operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-create
-     * @return void
-     */
-    // protected function setupCreateOperation()
-    // {
-    //     CRUD::setValidation(PermohonanInformasiRequest::class);
-
-    //     CRUD::field('nama_pemohon');
-    //     CRUD::field('alamat_pemohon');
-    //     CRUD::field('hp_pemohon');
-    //     CRUD::field('email_pemohon');
-    //     CRUD::field('ktp_pemohon');
-    //     CRUD::field('nama_pengguna');
-    //     CRUD::field('alamat_pengguna');
-    //     CRUD::field('hp_pengguna');
-    //     CRUD::field('email_pengguna');
-    //     CRUD::field('ktp_pengguna');
-    //     CRUD::field('nama_organisasi');
-    //     CRUD::field('telp_organisasi');
-    //     CRUD::field('email_organisasi');
-    //     CRUD::field('medsos_organisasi');
-    //     CRUD::field('nama_narahubung');
-    //     CRUD::field('telp_narahubung');
-    //     CRUD::field('ktp_narahubung');
-    //     CRUD::field('info_dibutuhkan');
-    //     CRUD::field('alasan_butuh');
-    //     CRUD::field('sumber_info');
-    //     CRUD::field('alamat_info');
-
-    //     /**
-    //      * Fields can be defined using the fluent syntax or array syntax:
-    //      * - CRUD::field('price')->type('number');
-    //      * - CRUD::addField(['name' => 'price', 'type' => 'number'])); 
-    //      */
-    // }
 
     public function updateStatus($id)
     {
@@ -230,18 +186,6 @@ class PermohonanInformasiCrudController extends CrudController
 
         return response()->json(['success' => true]);
     }
-
-
-    /**
-     * Define what happens when the Update operation is loaded.
-     * 
-     * @see https://backpackforlaravel.com/docs/crud-operation-update
-     * @return void
-     */
-    // protected function setupUpdateOperation()
-    // {
-    //     $this->setupCreateOperation();
-    // }
 
     protected function setupShowOperation()
     {
@@ -324,7 +268,14 @@ class PermohonanInformasiCrudController extends CrudController
         $this->crud->addColumn(['name' => 'info_dibutuhkan', 'label' => 'Info Dibutuhkan', 'type' => 'null_fallback']);
         $this->crud->addColumn(['name' => 'alasan_butuh', 'label' => 'Alasan Butuh', 'type' => 'null_fallback']);
         $this->crud->addColumn(['name' => 'sumber_info', 'label' => 'Sumber Informasi', 'type' => 'null_fallback']);
-        $this->crud->addColumn(['name' => 'alamat_info', 'label' => 'Alamat Informasi', 'type' => 'null_fallback']);
+        // $this->crud->addColumn(['name' => 'alamat_info', 'label' => 'Alamat Informasi', 'type' => 'null_fallback']);
+        $this->crud->addColumn([
+            'name' => 'alamat_link', // Sesuaikan dengan nama fungsi di model (tanpa get/Attribute)
+            'label' => 'Alamat Informasi',
+            'type' => 'model_function',
+            'function_name' => 'getAlamatLinkAttribute',
+            'limit' => 500, // Opsional: agar HTML tidak terpotong
+        ]);
 
         $this->crud->addColumn(['name' => 'tgl_pengajuan_display', 'label' => 'Tanggal Pengajuan', 'type' => 'null_fallback']);
 
@@ -335,16 +286,20 @@ class PermohonanInformasiCrudController extends CrudController
             $this->crud->addColumn(['name' => 'tgl_direspon_display', 'label' => 'Tanggal Direspon', 'type' => 'null_fallback']);
             $this->crud->addColumn(['name' => 'rerata_display', 'label' => 'Waktu Respon', 'type' => 'null_fallback']);
             $this->crud->addColumn(['name' => 'respon', 'label' => 'Respon PPID', 'type' => 'null_fallback']);
-            $this->crud->addButtonFromView('line', 'export_pdf', 'export_pdf', 'beginning');
+
+            if (backpack_user()->can('export permohonan')) {
+                $this->crud->addButtonFromView('line', 'export_pdf', 'export_pdf', 'beginning');
+            }
         }
 
-        if ($entry->status === 'belum direspon') {
+        if (backpack_user()->can('respon permohonan')) {
             $this->crud->addButtonFromView(
                 'line',
-                'update_status_btn',
-                'update_status',
+                'update_permohonan_btn',
+                'update_permohonan',
                 'beginning'
             );
+
         }
 
     }

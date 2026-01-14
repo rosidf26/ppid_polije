@@ -34,7 +34,9 @@ Route::group([
     Route::get(
         'permohonan-informasi/{id}/export-pdf',
         'PermohonanInformasiCrudController@exportPdf'
-    )->name('permohonan.exportPdf');
+    )
+        ->middleware('permission:export permohonan')
+        ->name('permohonan.exportPdf');
 
     Route::get(
         'pernyataan-keberatan/{id}/export-pdf',

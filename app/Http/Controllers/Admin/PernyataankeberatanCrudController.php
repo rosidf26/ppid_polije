@@ -99,7 +99,7 @@ class PernyataankeberatanCrudController extends CrudController
             $this->crud->addClause('where', 'status', $value);
         });
 
-        $this->crud->addButtonFromView('line', 'update_keberatan_btn', 'update_keberatan', 'beginning');
+        // $this->crud->addButtonFromView('line', 'update_keberatan_btn', 'update_keberatan', 'beginning');
         $this->crud->addButtonFromView('top', 'refresh_datatable', 'refresh_datatable', 'beginning');
 
         /**
@@ -150,10 +150,10 @@ class PernyataankeberatanCrudController extends CrudController
         $this->crud->set('show.setFromDb', false);
         $entry = $this->crud->getCurrentEntry(); // ambil data yg sedang dilihat
 
-        $this->crud->addColumn(['name' => 'unik_request', 'label' => 'Request ID', 'type' => 'null_fallback']);
+        $this->crud->addColumn(['name' => 'unik_request', 'label' => 'Nomor Permohonan Keberatan', 'type' => 'null_fallback']);
         $this->crud->addColumn([
             'name' => 'status',
-            'label' => 'Status Permohonan',
+            'label' => 'Status Permohonan Keberatan',
             'type' => 'model_function',
             'function_name' => 'getStatusBadge',
             'escaped' => false,
@@ -176,7 +176,9 @@ class PernyataankeberatanCrudController extends CrudController
             $this->crud->addColumn(['name' => 'tgl_direspon_display', 'label' => 'Tanggal Direspon', 'type' => 'null_fallback']);
             $this->crud->addColumn(['name' => 'rerata_display', 'label' => 'Waktu Respon', 'type' => 'null_fallback']);
             $this->crud->addColumn(['name' => 'respon', 'label' => 'Respon PPID', 'type' => 'null_fallback']);
-            $this->crud->addButtonFromView('line', 'export_pdf', 'export_pdf', 'beginning');
+            if (backpack_user()->can('export keberatan')) {
+                $this->crud->addButtonFromView('line', 'export_pdf', 'export_pdf', 'beginning');
+            }
         }
 
         /* ===============================
@@ -193,7 +195,7 @@ class PernyataankeberatanCrudController extends CrudController
          * =============================== */
 
         $this->crud->addColumn([
-            'label' => 'Nomor Permohonan',
+            'label' => 'Nomor Permohonan Informasi',
             'name' => 'permohonan.unik_request',
             'type' => 'model_function',
             'function_name' => 'getPermohonanLink',
@@ -206,14 +208,14 @@ class PernyataankeberatanCrudController extends CrudController
         ]);
 
         $this->crud->addColumn([
-            'label' => 'Status Permohonan',
+            'label' => 'Status Permohonan Informasi',
             'name' => 'status_permohonan',
             'type' => 'model_function',
             'function_name' => 'getStatusPermohonanBadge',
             'escaped' => false, // WAJIB agar HTML badge tampil
         ]);
 
-        if ($entry->status === 'belum direspon') {
+        if (backpack_user()->can('respon keberatan')) {
             $this->crud->addButtonFromView(
                 'line',
                 'update_keberatan_btn',
@@ -221,6 +223,7 @@ class PernyataankeberatanCrudController extends CrudController
                 'beginning'
             );
         }
+
     }
 
     public function updateStatus($id)

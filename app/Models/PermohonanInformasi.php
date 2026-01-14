@@ -240,4 +240,12 @@ class PermohonanInformasi extends Model
     {
         return in_array($this->status, ['diterima', 'ditolak']);
     }
+
+    public function getAlamatLinkAttribute()
+    {
+        if (!$this->alamat_info) {
+            return '-';
+        }
+        return '<a href="' . $this->alamat_info . '" target="_blank">' . $this->alamat_info . '</a>';
+    }
 }

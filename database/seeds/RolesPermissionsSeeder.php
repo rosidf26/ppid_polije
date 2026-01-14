@@ -33,21 +33,12 @@ class RolesPermissionsSeeder extends Seeder
         // Operator Permissions
         Role::where('name', 'Operator')->first()->syncPermissions([
             'kelola pengguna',
+            'kelola konten',
             'ubah halaman',
-            'tambah tag',
-            'ubah tag',
-            'hapus tag',
-            'tambah kategori',
-            'ubah kategori',
-            'hapus kategori',
-            'tambah artikel',
-            'ubah artikel',
-            'hapus artikel',
             'lihat dashboard',
             'lihat permohonan',
-            'ubah status permohonan',
+            'respon permohonan',
             'lihat keberatan',
-            'ubah status keberatan',
             'export permohonan',
             'export keberatan',
         ]);
@@ -56,11 +47,8 @@ class RolesPermissionsSeeder extends Seeder
         Role::where('name', 'Atasan PPID')->first()->syncPermissions([
             'lihat dashboard',
             'lihat permohonan',
-            'respon permohonan',
             'lihat keberatan',
             'respon keberatan',
-            'export permohonan',
-            'export keberatan',
         ]);
 
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();

@@ -1,10 +1,9 @@
-@php
-	$baseUrl = url(config('backpack.base.route_prefix', 'admin') . '/permohonan-informasi');
-@endphp
+<!-- $baseUrl = url(config('backpack.base.route_prefix', 'admin') . '/permohonan-informasi'); -->
+
 
 {{-- TOMBOL HANYA MUNCUL JIKA STATUS MASIH BELUM DIRESPON --}}
 @if ($entry->status === 'belum direspon')
-	<button class="btn btn-xs btn-warning update-status-btn" data-id="{{ $entry->getKey() }}">
+	<button class="btn btn-xs btn-warning update-permohonan-btn" data-id="{{ $entry->getKey() }}">
 		<i class="la la-check"></i> Update Status
 	</button>
 @endif
@@ -86,7 +85,7 @@
 
 				let selectedId = null;
 
-				$(document).on('click', '.update-status-btn', function () {
+				$(document).on('click', '.update-permohonan-btn', function () {
 					selectedId = $(this).data('id');
 
 					$('#statusSelect').val("");
