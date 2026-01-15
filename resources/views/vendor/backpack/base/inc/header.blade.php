@@ -37,9 +37,9 @@
                 <div class="dropdown-menu">
                     <ul class="list-unstyled mb-2">
                         <li class="divider"></li>
-                        <li>
+                        <!-- <li>
                             <a role="menuitem" tabindex="-1" href="{{ backpack_url('/profile') }}"><i class="bx bx-user-circle"></i>Profil</a>
-                        </li>
+                        </li> -->
                         <li>
                             <a role="menuitem" tabindex="-1" href="{{ backpack_url('logout') }}"><i class="bx bx-power-off"></i> Keluar</a>
                         </li>

@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('id');
 
-         // tombol kembali GLOBAL untuk halaman SHOW
+        // tombol kembali GLOBAL untuk halaman SHOW
         CRUD::addButtonFromView('show', 'back_button', 'back_button', 'beginning');
     }
 }

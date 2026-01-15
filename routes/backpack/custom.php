@@ -43,6 +43,9 @@ Route::group([
         'PernyataankeberatanCrudController@exportPdf'
     )->name('keberatan.exportPdf');
 
+    Route::middleware(['permission:ubah halaman'])->group(function () {
+        Route::crud('page', 'PageCrudController');
+    });
     Route::crud('user', 'UserCrudController');
     Route::crud('tag', 'TagCrudController');
     Route::crud('article', 'ArticleCrudController');

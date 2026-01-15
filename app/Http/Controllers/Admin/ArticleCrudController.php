@@ -28,6 +28,9 @@ class ArticleCrudController extends CrudController
         $this->crud->setRoute(config('backpack.base.route_prefix', 'admin') . '/article');
         $this->crud->setEntityNameStrings('article', 'articles');
 
+        $this->crud->denyAccess(['clone', 'bulkClone']);
+
+
         /*
         |--------------------------------------------------------------------------
         | LIST OPERATION
